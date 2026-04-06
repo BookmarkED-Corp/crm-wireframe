@@ -1,0 +1,2877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bookmarked CRM — AI-First Architecture Wireframe</title>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Bookmarked Brand Colors */
+    --eigengrau: #101828;
+    --card-surface: #1F2937;
+    --placeholder: #374151;
+    --sea-green: #15B79E;
+    --deep-green: #107569;
+    --pumpkin: #FF692E;
+    --white: #FFFFFF;
+    --muted: #9CA3AF;
+    --light-gray: #F9FAFB;
+    --border: #2D3748;
+    --border-light: #374151;
+
+    /* Semantic tokens */
+    --bg: var(--eigengrau);
+    --surface: var(--card-surface);
+    --surface-2: var(--placeholder);
+    --accent: var(--sea-green);
+    --accent-deep: var(--deep-green);
+    --warning: var(--pumpkin);
+    --text: var(--white);
+    --text-secondary: var(--muted);
+    --success: #22c55e;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Urbanist', Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ===================== */
+  /* TOP BAR               */
+  /* ===================== */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 20px; }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--eigengrau);
+  }
+
+  .logo-sub { color: var(--muted); font-weight: 400; font-size: 13px; margin-left: 4px; }
+
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+  .persona-switcher {
+    display: flex;
+    gap: 2px;
+    background: var(--bg);
+    padding: 3px;
+    border-radius: 8px;
+  }
+
+  .persona-btn {
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .persona-btn.active { background: var(--accent); color: var(--eigengrau); }
+  .persona-btn:hover:not(.active) { color: var(--text); }
+
+  .notif-btn {
+    position: relative;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 6px;
+  }
+
+  .notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background: var(--warning);
+    border-radius: 50%;
+  }
+
+  /* ===================== */
+  /* NAVIGATION             */
+  /* ===================== */
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    padding: 12px 18px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+
+  .nav-tab .tab-badge {
+    display: inline-block;
+    background: var(--warning);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* ===================== */
+  /* LAYOUT                 */
+  /* ===================== */
+  .main { display: flex; height: calc(100vh - 93px); }
+
+  .view { display: none; flex: 1; overflow: auto; flex-direction: column; }
+  .view.active { display: flex; }
+
+  /* ===================== */
+  /* SHARED COMPONENTS      */
+  /* ===================== */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-customer { background: rgba(21,183,158,0.15); color: var(--accent); }
+  .badge-prospect { background: rgba(21,183,158,0.08); color: var(--accent); border: 1px solid rgba(21,183,158,0.3); }
+  .badge-hot { background: rgba(255,105,46,0.15); color: var(--warning); }
+  .badge-esc { background: rgba(16,117,105,0.2); color: var(--deep-green); }
+  .badge-churning { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .badge-onboarding { background: rgba(168,85,247,0.15); color: #a855f7; }
+  .badge-healthy { background: rgba(34,197,94,0.15); color: var(--success); }
+  .badge-at-risk { background: rgba(234,179,8,0.15); color: #eab308; }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--eigengrau); }
+  .btn-primary:hover { background: var(--deep-green); border-color: var(--deep-green); color: var(--white); }
+  .btn-warning { background: transparent; border-color: var(--warning); color: var(--warning); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header h2 { font-size: 18px; font-weight: 700; }
+
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+  }
+
+  .filter-chip {
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-chip.active { border-color: var(--accent); color: var(--accent); background: rgba(21,183,158,0.08); }
+  .filter-chip:hover:not(.active) { border-color: var(--muted); color: var(--text); }
+
+  .metric-bar {
+    display: flex;
+    gap: 12px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .metric {
+    background: var(--surface);
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    min-width: 150px;
+  }
+
+  .metric-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .metric-value { font-size: 22px; font-weight: 800; }
+  .metric-value.accent { color: var(--accent); }
+  .metric-value.warn { color: var(--warning); }
+  .metric-delta { font-size: 11px; color: var(--accent); font-weight: 600; margin-top: 2px; }
+  .metric-delta.neg { color: var(--warning); }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .empty-state-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+  .empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--text); }
+
+  /* ===================== */
+  /* COMMAND VIEW           */
+  /* ===================== */
+  .command-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 860px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 32px 24px 24px;
+  }
+
+  .arch-banner {
+    background: linear-gradient(135deg, rgba(21,183,158,0.08), rgba(16,117,105,0.08));
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    margin: 16px 24px 0;
+  }
+
+  .arch-banner h3 { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .arch-banner p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .arch-stack {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .stack-item {
+    padding: 8px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .stack-item .stack-label {
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .greeting {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .greeting h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .greeting p { color: var(--muted); font-size: 14px; }
+
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .quick-action {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .quick-action:hover { border-color: var(--accent); }
+  .quick-action .qa-icon { font-size: 20px; margin-bottom: 6px; }
+  .quick-action .qa-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .quick-action .qa-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  .conversation { flex: 1; overflow-y: auto; margin-bottom: 16px; }
+
+  .msg { display: flex; gap: 12px; margin-bottom: 18px; }
+
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .msg-avatar.user { background: var(--accent); color: var(--eigengrau); }
+  .msg-avatar.claude { background: var(--deep-green); color: var(--white); }
+
+  .msg-body { flex: 1; }
+  .msg-name { font-size: 12px; font-weight: 700; margin-bottom: 4px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .msg-text { font-size: 14px; line-height: 1.7; color: var(--muted); }
+  .msg-text strong { color: var(--text); }
+  .msg-text .highlight { color: var(--accent); font-weight: 600; }
+
+  .msg-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-top: 10px;
+  }
+
+  .msg-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
+
+  .msg-card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .msg-card-row:last-child { border: none; }
+  .msg-card-row .label { color: var(--muted); }
+
+  .command-input {
+    width: 100%;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .command-input:focus { border-color: var(--accent); }
+  .command-input::placeholder { color: var(--placeholder); }
+
+  .command-hints {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .hint-chip {
+    padding: 4px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+  }
+
+  .hint-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ===================== */
+  /* PIPELINE VIEW          */
+  /* ===================== */
+  .kanban {
+    display: flex;
+    gap: 14px;
+    padding: 16px 24px;
+    overflow-x: auto;
+    flex: 1;
+    align-items: flex-start;
+  }
+
+  .kanban-col {
+    min-width: 290px;
+    max-width: 290px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .kanban-col-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .col-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .col-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .col-count {
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .col-total { font-size: 14px; font-weight: 700; color: var(--accent); }
+
+  .kanban-cards {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+
+  .deal-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+
+  .deal-card:hover { border-color: var(--accent); border-left-color: var(--accent); }
+  .deal-card.closing { border-left-color: var(--accent); }
+  .deal-card.stale { border-left-color: var(--warning); }
+  .deal-card.won { border-left-color: var(--success); }
+
+  .deal-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .deal-org { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+
+  .deal-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .deal-amount { font-size: 14px; font-weight: 700; color: var(--accent); }
+
+  .deal-owner {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--eigengrau);
+  }
+
+  .deal-tags {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .deal-tag {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .deal-tag.signal { background: rgba(255,105,46,0.15); color: var(--warning); }
+  .deal-tag.stage { background: rgba(21,183,158,0.1); color: var(--accent); }
+  .deal-tag.time { background: rgba(234,179,8,0.15); color: #eab308; }
+  .deal-tag.esc { background: rgba(16,117,105,0.15); color: var(--deep-green); }
+
+  .deal-age {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .deal-age.warning { color: var(--warning); }
+
+  /* ===================== */
+  /* DEAL DETAIL PANEL      */
+  /* ===================== */
+  .detail-panel {
+    width: 420px;
+    border-left: 1px solid var(--border);
+    background: var(--surface);
+    overflow-y: auto;
+    padding: 0;
+    display: none;
+  }
+
+  .detail-panel.open { display: block; }
+
+  .detail-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-header h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .detail-header .detail-sub { font-size: 13px; color: var(--muted); }
+
+  .detail-section {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-section h4 {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+  }
+
+  .detail-row .dr-label { color: var(--muted); }
+  .detail-row .dr-value { font-weight: 600; }
+
+  .stage-progress {
+    display: flex;
+    gap: 3px;
+    margin: 12px 0;
+  }
+
+  .stage-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+  }
+
+  .stage-bar.complete { background: var(--accent); }
+  .stage-bar.current { background: var(--warning); }
+
+  .activity-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .activity-item:last-child { border: none; }
+
+  .activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+    background: var(--border);
+  }
+
+  .activity-dot.call { background: var(--accent); }
+  .activity-dot.email { background: #6366f1; }
+  .activity-dot.note { background: var(--muted); }
+  .activity-dot.signal { background: var(--warning); }
+
+  .activity-text { font-size: 13px; line-height: 1.4; }
+  .activity-date { font-size: 11px; color: var(--muted); }
+
+  /* ===================== */
+  /* ORGANIZATIONS VIEW     */
+  /* ===================== */
+  .org-list-layout {
+    display: flex;
+    flex: 1;
+  }
+
+  .org-list {
+    width: 380px;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+  }
+
+  .org-search {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .org-search input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .org-search input:focus { border-color: var(--accent); }
+  .org-search input::placeholder { color: var(--placeholder); }
+
+  .org-list-item {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .org-list-item:hover { background: var(--surface); }
+  .org-list-item.active { background: var(--surface); border-left: 3px solid var(--accent); }
+
+  .org-item-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .org-item-meta { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .org-item-badges { display: flex; gap: 4px; }
+
+  .org-detail {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .org-detail-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .org-detail-header h2 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .org-detail-header .org-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+  .org-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+  }
+
+  .org-tab {
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+
+  .org-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .org-content { padding: 24px; }
+
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .data-card {
+    background: var(--bg);
+    padding: 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .data-card .dc-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .data-card .dc-value { font-size: 16px; font-weight: 700; }
+  .data-card .dc-value.accent { color: var(--accent); }
+  .data-card .dc-value.warn { color: var(--warning); }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+    margin-top: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .signal-feed { display: flex; flex-direction: column; gap: 8px; }
+
+  .signal-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .signal-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .signal-dot.high { background: var(--warning); }
+  .signal-dot.med { background: var(--accent); }
+  .signal-dot.low { background: var(--muted); }
+
+  .signal-body { flex: 1; }
+  .signal-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .signal-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .signal-meta { font-size: 11px; color: var(--muted); margin-top: 6px; display: flex; gap: 12px; }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+
+  .contact-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--eigengrau);
+    flex-shrink: 0;
+  }
+
+  .contact-info { flex: 1; }
+  .contact-name { font-size: 13px; font-weight: 700; }
+  .contact-role { font-size: 11px; color: var(--muted); }
+
+  .rel-path {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+
+  .path-node {
+    padding: 4px 10px;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .path-arrow { color: var(--muted); font-size: 14px; }
+
+  /* ===================== */
+  /* SIGNALS VIEW           */
+  /* ===================== */
+  .signals-layout { display: flex; flex: 1; }
+
+  .signals-main { flex: 1; padding: 20px 24px; overflow-y: auto; }
+  .signals-sidebar {
+    width: 300px;
+    border-left: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+    background: var(--surface);
+  }
+
+  .signal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+    cursor: pointer;
+  }
+
+  .signal-card:hover { border-color: var(--accent); }
+
+  .signal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .signal-type-tag {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .type-challenge { background: rgba(255,105,46,0.15); color: var(--warning); }
+  .type-board { background: rgba(21,183,158,0.12); color: var(--accent); }
+  .type-transcript { background: rgba(168,85,247,0.15); color: #a855f7; }
+  .type-legislation { background: rgba(234,179,8,0.15); color: #eab308; }
+  .type-news { background: rgba(59,130,246,0.15); color: #3b82f6; }
+
+  .signal-card-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .signal-card-body { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+
+  .signal-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sidebar-stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-stat:last-child { border: none; }
+  .sidebar-stat .ss-label { color: var(--muted); }
+  .sidebar-stat .ss-value { font-weight: 700; }
+
+  .sidebar-heading {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+    margin-top: 20px;
+  }
+
+  .sidebar-heading:first-child { margin-top: 0; }
+
+  /* ===================== */
+  /* RELATIONSHIPS VIEW     */
+  /* ===================== */
+  .rel-layout { display: flex; flex: 1; }
+
+  .rel-graph {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .graph-visual { position: relative; width: 640px; height: 520px; }
+
+  .graph-node {
+    position: absolute;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .graph-node:hover { transform: scale(1.1); z-index: 10; border-color: var(--accent); }
+  .graph-node.center { width: 100px; height: 100px; border-color: var(--accent); background: rgba(21,183,158,0.12); font-size: 12px; }
+  .graph-node.lg { width: 76px; height: 76px; border-color: var(--accent); background: rgba(21,183,158,0.08); font-size: 11px; }
+  .graph-node.md { width: 64px; height: 64px; border-color: var(--deep-green); background: rgba(16,117,105,0.08); }
+  .graph-node.sm { width: 52px; height: 52px; border-color: var(--muted); }
+
+  .rel-panel {
+    width: 360px;
+    border-left: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+    background: var(--surface);
+  }
+
+  .rel-query-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .rel-query-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: inherit;
+    font-size: 14px;
+    font-style: italic;
+    outline: none;
+    margin-bottom: 12px;
+  }
+
+  /* ===================== */
+  /* CUSTOMER SUCCESS VIEW  */
+  /* ===================== */
+  .cs-layout { display: flex; flex: 1; }
+
+  .cs-main { flex: 1; overflow-y: auto; }
+
+  .cs-sidebar {
+    width: 360px;
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    background: var(--surface);
+    padding: 20px;
+  }
+
+  .health-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+    padding: 20px 24px;
+  }
+
+  .customer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .customer-card:hover { border-color: var(--accent); }
+
+  .cc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .cc-name { font-size: 15px; font-weight: 700; }
+  .cc-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .health-score {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .health-score.good { background: rgba(34,197,94,0.15); color: var(--success); border: 2px solid var(--success); }
+  .health-score.ok { background: rgba(234,179,8,0.12); color: #eab308; border: 2px solid #eab308; }
+  .health-score.bad { background: rgba(239,68,68,0.12); color: #ef4444; border: 2px solid #ef4444; }
+
+  .cc-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .cc-metric {
+    text-align: center;
+    padding: 6px;
+    background: var(--bg);
+    border-radius: 4px;
+  }
+
+  .cc-metric .ccm-value { font-size: 14px; font-weight: 700; }
+  .cc-metric .ccm-label { font-size: 10px; color: var(--muted); }
+
+  .cc-status { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .cc-status strong { color: var(--text); }
+
+  .onboarding-track {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  .ob-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .ob-name { font-size: 14px; font-weight: 700; }
+
+  .ob-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .ob-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  .ob-progress-fill.good { background: var(--accent); }
+  .ob-progress-fill.warn { background: var(--warning); }
+  .ob-progress-fill.stalled { background: #ef4444; }
+
+  .ob-steps { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .ob-step {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .ob-step.done { background: rgba(21,183,158,0.12); color: var(--accent); }
+  .ob-step.current { background: rgba(255,105,46,0.12); color: var(--warning); }
+  .ob-step.pending { background: var(--surface); color: var(--muted); }
+
+  /* ===================== */
+  /* DAILY ACTIONS VIEW     */
+  /* ===================== */
+  .daily-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 20px 24px;
+    overflow-y: auto;
+    align-content: start;
+  }
+
+  .daily-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .daily-card.full-width { grid-column: 1 / -1; }
+
+  .dc-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dc-header h3 { font-size: 14px; font-weight: 700; }
+
+  .dc-count {
+    background: var(--warning);
+    color: var(--white);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .dc-body { padding: 12px 18px; }
+
+  .action-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .action-item:last-child { border: none; }
+
+  .action-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .action-dot.high { background: var(--warning); }
+  .action-dot.med { background: var(--accent); }
+  .action-dot.low { background: var(--muted); }
+
+  .action-content { flex: 1; }
+  .action-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .action-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .action-reason { font-size: 11px; color: var(--accent); font-style: italic; margin-top: 4px; font-weight: 500; }
+
+  /* ===================== */
+  /* SETTINGS VIEW          */
+  /* ===================== */
+  .settings-layout {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  .settings-section {
+    margin-bottom: 32px;
+  }
+
+  .settings-section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .settings-section .ss-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+  }
+
+  .setting-info { flex: 1; }
+  .setting-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .setting-desc { font-size: 12px; color: var(--muted); }
+
+  .toggle {
+    width: 44px;
+    height: 24px;
+    background: var(--border);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle.on { background: var(--accent); }
+
+  .toggle::after {
+    content: '';
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s;
+  }
+
+  .toggle.on::after { transform: translateX(20px); }
+
+  .integration-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+  }
+
+  .integ-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .integ-info { flex: 1; }
+  .integ-name { font-size: 14px; font-weight: 600; }
+  .integ-status { font-size: 12px; }
+  .integ-status.connected { color: var(--accent); }
+  .integ-status.pending { color: var(--warning); }
+</style>
+</head>
+<body>
+
+<!-- ======================== -->
+<!-- TOP BAR                   -->
+<!-- ======================== -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">
+      <div class="logo-icon">B</div>
+      Bookmarked<span class="logo-sub">CRM</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="persona-switcher">
+      <button class="persona-btn active" onclick="switchPersona(this, 'steve')">Steve</button>
+      <button class="persona-btn" onclick="switchPersona(this, 'jan')">Jan</button>
+      <button class="persona-btn" onclick="switchPersona(this, 'tila')">Tila</button>
+      <button class="persona-btn" onclick="switchPersona(this, 'esc')">ESC Portal</button>
+    </div>
+    <button class="notif-btn">&#x1F514;<div class="notif-badge"></div></button>
+  </div>
+</div>
+
+<!-- ======================== -->
+<!-- NAVIGATION                -->
+<!-- ======================== -->
+<div class="nav-tabs" id="mainNav">
+  <button class="nav-tab active" onclick="switchView('command', this)">Command</button>
+  <button class="nav-tab" onclick="switchView('pipeline', this)">Pipeline</button>
+  <button class="nav-tab" onclick="switchView('orgs', this)">Organizations</button>
+  <button class="nav-tab" onclick="switchView('signals', this)">Signals<span class="tab-badge">3</span></button>
+  <button class="nav-tab" onclick="switchView('relationships', this)">Relationships</button>
+  <button class="nav-tab" onclick="switchView('cs', this)">Customer Success</button>
+  <button class="nav-tab" onclick="switchView('daily', this)">Daily Actions</button>
+  <button class="nav-tab" onclick="switchView('settings', this)">Settings</button>
+</div>
+
+<div class="main">
+
+<!-- ================================ -->
+<!-- VIEW: COMMAND CENTER              -->
+<!-- ================================ -->
+<div class="view active" id="view-command">
+  <div class="arch-banner">
+    <h3>This wireframe demonstrates the AI-First CRM architecture</h3>
+    <p>The database (Supabase PostgreSQL) holds the truth. Claude reads, writes, and acts on it via skills. These views exist for visual context — the primary interface is conversation through Slack, Claude Code, and voice.</p>
+    <div class="arch-stack">
+      <div class="stack-item"><span class="stack-label">Database</span>Supabase (PostgreSQL)</div>
+      <div class="stack-item"><span class="stack-label">App Layer</span>Claude + Skills</div>
+      <div class="stack-item"><span class="stack-label">Visual</span>NocoDB (optional)</div>
+      <div class="stack-item"><span class="stack-label">Inputs</span>Slack / Voice / CLI</div>
+      <div class="stack-item"><span class="stack-label">Email</span>Loops or Resend</div>
+    </div>
+  </div>
+
+  <div class="command-center">
+    <div class="greeting" id="greetingArea">
+      <h1>Good morning, Steve</h1>
+      <p>3 signals overnight &middot; 2 deals need attention &middot; Pipeline at $487K weighted</p>
+    </div>
+
+    <div class="quick-actions">
+      <div class="quick-action">
+        <div class="qa-icon">&#x1F4CA;</div>
+        <div class="qa-title">Pipeline Brief</div>
+        <div class="qa-desc">ARR, pipeline health, investor metrics</div>
+      </div>
+      <div class="quick-action">
+        <div class="qa-icon">&#x26A1;</div>
+        <div class="qa-title">Signal Digest</div>
+        <div class="qa-desc">Overnight challenges, board votes, news</div>
+      </div>
+      <div class="quick-action">
+        <div class="qa-icon">&#x1F4AC;</div>
+        <div class="qa-title">Draft Outreach</div>
+        <div class="qa-desc">Signal-driven emails ready for review</div>
+      </div>
+      <div class="quick-action">
+        <div class="qa-icon">&#x1F3AF;</div>
+        <div class="qa-title">Today's Focus</div>
+        <div class="qa-desc">Your prioritized action list</div>
+      </div>
+    </div>
+
+    <div class="conversation">
+      <div class="msg">
+        <div class="msg-avatar user">S</div>
+        <div class="msg-body">
+          <div class="msg-name">Steve</div>
+          <div class="msg-text">What's the best path into Katy ISD? Mo Casey mentioned them last week.</div>
+        </div>
+      </div>
+      <div class="msg">
+        <div class="msg-avatar claude">C</div>
+        <div class="msg-body">
+          <div class="msg-name">Claude</div>
+          <div class="msg-text">
+            <strong>Katy ISD</strong> — 85,241 students, Region 4 ESC. I found 3 paths:
+            <br><br>
+            1. <span class="highlight">Mo Casey &rarr; Maria Lopez (Curriculum Director)</span> — strongest path, Mo confirmed direct relationship on Mar 28 call
+            <br>2. <strong>John Petri &rarr; Dr. Rebecca Dawn (Board Trustee)</strong> — board-level influence, slower
+            <br>3. <strong>Direct to Sarah Chen (Head Librarian)</strong> — she visited our TCEA booth Mar 15
+            <br><br>
+            <span class="highlight">Key signal:</span> Board voted 5-2 last Tuesday to form an SB 13 committee. They'll need compliance tooling in 60-90 days.
+          </div>
+          <div class="msg-card">
+            <h4>Recommended Action</h4>
+            <div class="msg-card-row"><span class="label">Best path</span><span>Mo Casey &rarr; Maria Lopez</span></div>
+            <div class="msg-card-row"><span class="label">Next step</span><span>Draft intro email for Mo to forward</span></div>
+            <div class="msg-card-row"><span class="label">Urgency</span><span style="color: var(--warning);">High — compliance committee forming now</span></div>
+            <div class="msg-card-row"><span class="label">Deal size estimate</span><span style="color: var(--accent);">$18,000 - $24,000 ARR</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="msg">
+        <div class="msg-avatar user">S</div>
+        <div class="msg-body">
+          <div class="msg-name">Steve</div>
+          <div class="msg-text">Draft that email for Mo. Use the compliance angle.</div>
+        </div>
+      </div>
+      <div class="msg">
+        <div class="msg-avatar claude">C</div>
+        <div class="msg-body">
+          <div class="msg-name">Claude</div>
+          <div class="msg-text">
+            <strong>Draft ready for review:</strong>
+            <br><br>
+            <em>Subject: Quick intro — helping Katy ISD with SB 13 compliance</em>
+            <br><br>
+            <em>Mo — thanks for the intro to Maria. Given Katy's board just voted to stand up their compliance committee, the timing is perfect for a quick conversation about how we're helping districts like [peer district examples] streamline their review process...</em>
+          </div>
+          <div style="margin-top: 10px; display: flex; gap: 8px;">
+            <button class="btn btn-primary btn-sm">Send to Mo via Slack</button>
+            <button class="btn btn-sm">Edit Draft</button>
+            <button class="btn btn-sm">Create Deal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="text" class="command-input" placeholder="Ask about pipeline, districts, signals, relationships, or say /cockpit for morning briefing...">
+      <div class="command-hints">
+        <span class="hint-chip">/cockpit — morning briefing</span>
+        <span class="hint-chip">/pipeline — investor metrics</span>
+        <span class="hint-chip">/signal — intelligence digest</span>
+        <span class="hint-chip">/outreach [district] — draft email</span>
+        <span class="hint-chip">/cs — customer health</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- VIEW: PIPELINE                    -->
+<!-- ================================ -->
+<div class="view" id="view-pipeline">
+  <div class="section-header">
+    <h2>Pipeline</h2>
+    <div class="filter-bar">
+      <button class="filter-chip active">Sales Pipeline</button>
+      <button class="filter-chip">ESC Partnerships</button>
+      <button class="filter-chip">Renewals 25/26</button>
+      <button class="filter-chip">Renewals 26/27</button>
+      <button class="filter-chip">Out of State</button>
+    </div>
+  </div>
+
+  <div class="metric-bar">
+    <div class="metric">
+      <div class="metric-label">Weighted Pipeline</div>
+      <div class="metric-value accent">$487K</div>
+      <div class="metric-delta">+12% vs last month</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Active Deals</div>
+      <div class="metric-value">34</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Avg Deal Size</div>
+      <div class="metric-value">$14.3K</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Avg Days in Stage</div>
+      <div class="metric-value warn">18d</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Win Rate (90d)</div>
+      <div class="metric-value accent">28%</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">ARR (Current)</div>
+      <div class="metric-value accent">$892K</div>
+      <div class="metric-delta">Target: $1.2M</div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex: 1;">
+    <div class="kanban" style="flex: 1;">
+      <!-- Sales Intake -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <span class="col-title"><span class="col-dot" style="background: var(--muted);"></span>Intake <span class="col-count">3</span></span>
+          <span class="col-total">$42K</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="deal-card" onclick="openDeal('lewisville')">
+            <div class="deal-name">Lewisville ISD — Inquiry</div>
+            <div class="deal-org">Lewisville ISD &middot; Region 11</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$16,000</span>
+              <div class="deal-owner" style="background: var(--warning);">T</div>
+            </div>
+            <div class="deal-tags">
+              <span class="deal-tag signal">Inbound Call</span>
+            </div>
+            <div class="deal-age">&#x23F1; 2 days in stage</div>
+          </div>
+          <div class="deal-card" onclick="openDeal('garland')">
+            <div class="deal-name">Garland ISD — SB13</div>
+            <div class="deal-org">Garland ISD &middot; Region 10</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$14,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+            <div class="deal-age">&#x23F1; 5 days in stage</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Qualified -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <span class="col-title"><span class="col-dot" style="background: var(--accent);"></span>Qualified <span class="col-count">6</span></span>
+          <span class="col-total">$96K</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="deal-card stale" onclick="openDeal('houston')">
+            <div class="deal-name">Houston ISD — Full Platform</div>
+            <div class="deal-org">Houston ISD &middot; Region 4</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$36,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+            <div class="deal-tags">
+              <span class="deal-tag signal">SB13 Committee</span>
+              <span class="deal-tag time">Stale: 22d</span>
+            </div>
+            <div class="deal-age warning">&#x26A0; 22 days — SLA breach (target: 14d)</div>
+          </div>
+          <div class="deal-card" onclick="openDeal('frisco')">
+            <div class="deal-name">Frisco ISD — Pilot</div>
+            <div class="deal-org">Frisco ISD &middot; Region 10</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$12,000</span>
+              <div class="deal-owner" style="background: var(--warning);">T</div>
+            </div>
+            <div class="deal-age">&#x23F1; 8 days in stage</div>
+          </div>
+          <div class="deal-card" onclick="openDeal('plano')">
+            <div class="deal-name">Plano ISD — Expansion</div>
+            <div class="deal-org">Plano ISD &middot; Region 10</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$24,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+            <div class="deal-tags">
+              <span class="deal-tag stage">Board Vote Mar 28</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demo Scheduled -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <span class="col-title"><span class="col-dot" style="background: var(--deep-green);"></span>Demo <span class="col-count">4</span></span>
+          <span class="col-total">$72K</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="deal-card" onclick="openDeal('katy')">
+            <div class="deal-name">Katy ISD — New Business</div>
+            <div class="deal-org">Katy ISD &middot; Region 4</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$22,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+            <div class="deal-tags">
+              <span class="deal-tag signal">Board Challenge</span>
+              <span class="deal-tag esc">Mo Casey</span>
+            </div>
+            <div class="deal-age">&#x23F1; 3 days in stage</div>
+          </div>
+          <div class="deal-card" onclick="openDeal('spring')">
+            <div class="deal-name">Spring ISD — Compliance</div>
+            <div class="deal-org">Spring ISD &middot; Region 4</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$18,000</span>
+              <div class="deal-owner" style="background: var(--warning);">T</div>
+            </div>
+            <div class="deal-tags"><span class="deal-tag stage">Demo Mon 4/7</span></div>
+          </div>
+          <div class="deal-card" onclick="openDeal('northside')">
+            <div class="deal-name">Northside ISD — Full</div>
+            <div class="deal-org">Northside ISD &middot; Region 20</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$20,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proposal -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <span class="col-title"><span class="col-dot" style="background: #6366f1;"></span>Proposal <span class="col-count">3</span></span>
+          <span class="col-total">$61K</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="deal-card stale" onclick="openDeal('arlington')">
+            <div class="deal-name">Arlington ISD — Full</div>
+            <div class="deal-org">Arlington ISD &middot; Region 11</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$28,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+            <div class="deal-age warning">&#x26A0; 10 days — no response to follow-up</div>
+          </div>
+          <div class="deal-card" onclick="openDeal('region7')">
+            <div class="deal-name">Region 7 ESC</div>
+            <div class="deal-org">ESC Partnership</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$15,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+            <div class="deal-tags"><span class="deal-tag esc">ESC Channel</span></div>
+          </div>
+          <div class="deal-card" onclick="openDeal('mesquite')">
+            <div class="deal-name">Mesquite ISD — Pilot</div>
+            <div class="deal-org">Mesquite ISD &middot; Region 10</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$8,000</span>
+              <div class="deal-owner" style="background: var(--warning);">T</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Negotiation -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <span class="col-title"><span class="col-dot" style="background: var(--warning);"></span>Negotiation <span class="col-count">2</span></span>
+          <span class="col-total">$46K</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="deal-card closing" onclick="openDeal('cypress')">
+            <div class="deal-name">Cypress-Fairbanks ISD</div>
+            <div class="deal-org">Cy-Fair ISD &middot; Region 4</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$28,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+            <div class="deal-tags"><span class="deal-tag signal">Closing this week</span></div>
+          </div>
+          <div class="deal-card" onclick="openDeal('killeen')">
+            <div class="deal-name">Killeen ISD — 3yr</div>
+            <div class="deal-org">Killeen ISD &middot; Region 12</div>
+            <div class="deal-meta">
+              <span class="deal-amount">$18,000</span>
+              <div class="deal-owner" style="background: var(--accent); color: var(--eigengrau);">J</div>
+            </div>
+            <div class="deal-tags"><span class="deal-tag stage">Multi-year</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Closed Won -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <span class="col-title"><span class="col-dot" style="background: var(--success);"></span>Won <span class="col-count">8</span></span>
+          <span class="col-total">$142K</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="deal-card won" onclick="openDeal('roundrock')">
+            <div class="deal-name">Round Rock ISD</div>
+            <div class="deal-org">Round Rock ISD &middot; Region 13</div>
+            <div class="deal-meta"><span class="deal-amount">$22,000</span></div>
+          </div>
+          <div class="deal-card won" onclick="openDeal('leander')">
+            <div class="deal-name">Leander ISD — Renewal</div>
+            <div class="deal-org">Leander ISD &middot; Region 13</div>
+            <div class="deal-meta"><span class="deal-amount">$18,000</span></div>
+          </div>
+          <div class="deal-card won" onclick="openDeal('georgetown')">
+            <div class="deal-name">Georgetown ISD</div>
+            <div class="deal-org">Georgetown ISD &middot; Region 13</div>
+            <div class="deal-meta"><span class="deal-amount">$14,000</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deal Detail Panel -->
+    <div class="detail-panel open" id="dealPanel">
+      <div class="detail-header" style="position:relative;">
+        <button onclick="closeDealPanel()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;" title="Close">&times;</button>
+        <h3>Cypress-Fairbanks ISD</h3>
+        <div class="detail-sub">Cy-Fair ISD &middot; Region 4 ESC &middot; $28,000 ARR</div>
+        <div style="margin-top: 10px; display: flex; gap: 6px;">
+          <span class="badge badge-hot">Closing</span>
+          <span class="badge badge-prospect">New Business</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>Stage Progress</h4>
+        <div class="stage-progress">
+          <div class="stage-bar complete"></div>
+          <div class="stage-bar complete"></div>
+          <div class="stage-bar complete"></div>
+          <div class="stage-bar complete"></div>
+          <div class="stage-bar current"></div>
+          <div class="stage-bar"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--muted);">
+          <span>Intake</span><span>Qualified</span><span>Demo</span><span>Proposal</span><span style="color: var(--warning);">Negotiation</span><span>Won</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>Deal Details</h4>
+        <div class="detail-row"><span class="dr-label">Amount</span><span class="dr-value" style="color: var(--accent);">$28,000/yr</span></div>
+        <div class="detail-row"><span class="dr-label">Owner</span><span class="dr-value">Jan</span></div>
+        <div class="detail-row"><span class="dr-label">Close date</span><span class="dr-value">Apr 11, 2026</span></div>
+        <div class="detail-row"><span class="dr-label">Students</span><span class="dr-value">116,000</span></div>
+        <div class="detail-row"><span class="dr-label">Decision maker</span><span class="dr-value">Dr. Mark Williams</span></div>
+        <div class="detail-row"><span class="dr-label">Days in pipeline</span><span class="dr-value">34 days</span></div>
+        <div class="detail-row"><span class="dr-label">Probability</span><span class="dr-value" style="color: var(--accent);">80%</span></div>
+      </div>
+
+      <div class="detail-section">
+        <h4>Activity</h4>
+        <div class="activity-item">
+          <div class="activity-dot call"></div>
+          <div>
+            <div class="activity-text"><strong>Call with Dr. Williams</strong> — requested 3-year pricing</div>
+            <div class="activity-date">Apr 2, 2026 &middot; Jan</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot email"></div>
+          <div>
+            <div class="activity-text"><strong>Proposal sent</strong> — Standard + SB13 module</div>
+            <div class="activity-date">Mar 25, 2026 &middot; Jan</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot call"></div>
+          <div>
+            <div class="activity-text"><strong>Demo completed</strong> — 45 min, 3 stakeholders</div>
+            <div class="activity-date">Mar 18, 2026 &middot; Jan + Steve</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot signal"></div>
+          <div>
+            <div class="activity-text"><strong>Signal:</strong> Board approved compliance budget</div>
+            <div class="activity-date">Mar 12, 2026 &middot; Board minutes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>Claude Recommendation</h4>
+        <div style="background: var(--bg); padding: 14px; border-radius: 6px; border: 1px solid var(--accent); font-size: 13px; line-height: 1.6;">
+          <strong style="color: var(--accent);">Send revised 3-year quote today.</strong> Dr. Williams specifically requested multi-year pricing — this is a strong closing signal. Include 10% discount for 3-year commitment ($75,600 total vs $84,000). Deal should close by Friday.
+        </div>
+        <div style="margin-top: 10px; display: flex; gap: 8px;">
+          <button class="btn btn-primary btn-sm">Draft Quote</button>
+          <button class="btn btn-sm">Log Activity</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- VIEW: ORGANIZATIONS               -->
+<!-- ================================ -->
+<div class="view" id="view-orgs">
+  <div class="org-list-layout">
+    <div class="org-list">
+      <div class="org-search">
+        <input type="text" placeholder="Search districts, ESCs, partners...">
+      </div>
+      <div class="filter-bar" style="padding: 10px 16px; border-bottom: 1px solid var(--border);">
+        <button class="filter-chip active">All</button>
+        <button class="filter-chip">Customers</button>
+        <button class="filter-chip">Prospects</button>
+        <button class="filter-chip">ESCs</button>
+      </div>
+      <div class="org-list-item active">
+        <div class="org-item-name">Katy ISD</div>
+        <div class="org-item-meta">85,241 students &middot; Region 4 &middot; Katy, TX</div>
+        <div class="org-item-badges">
+          <span class="badge badge-prospect">Prospect</span>
+          <span class="badge badge-hot">High Signal</span>
+        </div>
+      </div>
+      <div class="org-list-item">
+        <div class="org-item-name">Cypress-Fairbanks ISD</div>
+        <div class="org-item-meta">116,000 students &middot; Region 4 &middot; Cypress, TX</div>
+        <div class="org-item-badges">
+          <span class="badge badge-prospect">Prospect</span>
+          <span class="badge badge-hot">Closing</span>
+        </div>
+      </div>
+      <div class="org-list-item">
+        <div class="org-item-name">Round Rock ISD</div>
+        <div class="org-item-meta">52,000 students &middot; Region 13 &middot; Round Rock, TX</div>
+        <div class="org-item-badges">
+          <span class="badge badge-customer">Customer</span>
+          <span class="badge badge-healthy">Healthy</span>
+        </div>
+      </div>
+      <div class="org-list-item">
+        <div class="org-item-name">Conroe ISD</div>
+        <div class="org-item-meta">72,000 students &middot; Region 6 &middot; Conroe, TX</div>
+        <div class="org-item-badges">
+          <span class="badge badge-customer">Customer</span>
+          <span class="badge badge-at-risk">Expansion</span>
+        </div>
+      </div>
+      <div class="org-list-item">
+        <div class="org-item-name">Region 4 ESC</div>
+        <div class="org-item-meta">53 districts &middot; Houston, TX</div>
+        <div class="org-item-badges">
+          <span class="badge badge-esc">ESC Partner</span>
+        </div>
+      </div>
+      <div class="org-list-item">
+        <div class="org-item-name">Houston ISD</div>
+        <div class="org-item-meta">187,000 students &middot; Region 4 &middot; Houston, TX</div>
+        <div class="org-item-badges">
+          <span class="badge badge-prospect">Prospect</span>
+        </div>
+      </div>
+      <div class="org-list-item">
+        <div class="org-item-name">Leander ISD</div>
+        <div class="org-item-meta">42,000 students &middot; Region 13 &middot; Leander, TX</div>
+        <div class="org-item-badges">
+          <span class="badge badge-customer">Customer</span>
+          <span class="badge badge-healthy">Renewed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="org-detail">
+      <div class="org-detail-header">
+        <h2>Katy Independent School District</h2>
+        <div class="org-subtitle">School District &middot; Region 4 ESC &middot; Katy, TX 77449</div>
+        <div style="display: flex; gap: 6px;">
+          <span class="badge badge-prospect">Prospect</span>
+          <span class="badge badge-hot">High Signal</span>
+          <span class="badge badge-esc">Region 4</span>
+        </div>
+      </div>
+
+      <div class="org-tabs">
+        <button class="org-tab active">Overview</button>
+        <button class="org-tab">Contacts</button>
+        <button class="org-tab">Signals</button>
+        <button class="org-tab">Deals</button>
+        <button class="org-tab">Activity</button>
+        <button class="org-tab">Relationships</button>
+      </div>
+
+      <div class="org-content">
+        <div class="data-grid">
+          <div class="data-card"><div class="dc-label">Students</div><div class="dc-value">85,241</div></div>
+          <div class="data-card"><div class="dc-label">Schools</div><div class="dc-value">71</div></div>
+          <div class="data-card"><div class="dc-label">Librarians</div><div class="dc-value">68</div></div>
+          <div class="data-card"><div class="dc-label">Revenue</div><div class="dc-value">$1.2B</div></div>
+          <div class="data-card"><div class="dc-label">SB 13 Status</div><div class="dc-value warn">Committee Forming</div></div>
+          <div class="data-card"><div class="dc-label">Deal Potential</div><div class="dc-value accent">$18-24K</div></div>
+        </div>
+
+        <div class="section-title">Active Signals (3)</div>
+        <div class="signal-feed">
+          <div class="signal-item">
+            <div class="signal-dot high"></div>
+            <div class="signal-body">
+              <div class="signal-title">Board voted 5-2 to form SB 13 compliance committee</div>
+              <div class="signal-desc">Budget allocation for compliance tech scheduled for May board meeting.</div>
+              <div class="signal-meta"><span>Board Minutes &middot; Mar 26</span><span>Score: 92</span></div>
+            </div>
+          </div>
+          <div class="signal-item">
+            <div class="signal-dot high"></div>
+            <div class="signal-body">
+              <div class="signal-title">3 book challenges filed in February</div>
+              <div class="signal-desc">Formal committee review required within 30 days per district policy.</div>
+              <div class="signal-meta"><span>Challenge Monitor &middot; Feb 2026</span><span>Score: 78</span></div>
+            </div>
+          </div>
+          <div class="signal-item">
+            <div class="signal-dot med"></div>
+            <div class="signal-body">
+              <div class="signal-title">Mo Casey mentioned warm intro path to Curriculum Director</div>
+              <div class="signal-desc">"I know the curriculum director there — they're scrambling on compliance."</div>
+              <div class="signal-meta"><span>Transcript &middot; Mar 28</span><span>Score: 65</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Key Contacts (3)</div>
+        <div class="contact-row">
+          <div class="contact-avatar" style="background: var(--accent);">ML</div>
+          <div class="contact-info">
+            <div class="contact-name">Maria Lopez</div>
+            <div class="contact-role">Director of Curriculum &amp; Instruction &middot; Budget authority</div>
+          </div>
+          <span class="badge badge-customer" style="font-size: 10px;">Mo Casey ref</span>
+        </div>
+        <div class="contact-row">
+          <div class="contact-avatar" style="background: var(--deep-green);">SC</div>
+          <div class="contact-info">
+            <div class="contact-name">Sarah Chen</div>
+            <div class="contact-role">Head Librarian &middot; District Library Services</div>
+          </div>
+          <span class="badge badge-at-risk" style="font-size: 10px;">TCEA lead</span>
+        </div>
+        <div class="contact-row">
+          <div class="contact-avatar" style="background: var(--warning);">RD</div>
+          <div class="contact-info">
+            <div class="contact-name">Dr. Rebecca Dawn</div>
+            <div class="contact-role">Board Trustee, Position 4</div>
+          </div>
+          <span class="badge badge-prospect" style="font-size: 10px;">Via John Petri</span>
+        </div>
+
+        <div class="section-title">Relationship Paths</div>
+        <div style="background: var(--bg); padding: 14px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 8px;">
+          <div style="font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 6px;">STRONGEST PATH (2 hops)</div>
+          <div class="rel-path">
+            <span class="path-node">Bookmarked</span>
+            <span class="path-arrow">&rarr;</span>
+            <span class="path-node" style="border-color: var(--accent);">Mo Casey</span>
+            <span class="path-arrow">&rarr;</span>
+            <span class="path-node" style="border-color: var(--success);">Maria Lopez</span>
+          </div>
+          <div style="font-size: 12px; color: var(--muted);">Warm intro &middot; Curriculum Director (budget authority)</div>
+        </div>
+        <div style="background: var(--bg); padding: 14px; border-radius: 6px; border: 1px solid var(--border);">
+          <div style="font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 6px;">ALTERNATIVE PATH</div>
+          <div class="rel-path">
+            <span class="path-node">Bookmarked</span>
+            <span class="path-arrow">&rarr;</span>
+            <span class="path-node">John Petri</span>
+            <span class="path-arrow">&rarr;</span>
+            <span class="path-node">Dr. Dawn</span>
+          </div>
+          <div style="font-size: 12px; color: var(--muted);">Board-level influence &middot; Slower cycle</div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <div style="background: var(--bg); padding: 16px; border-radius: var(--radius); border: 1px solid var(--accent);">
+            <div style="font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">Claude Recommendation</div>
+            <div style="font-size: 13px; line-height: 1.6;">
+              <strong>Priority: HIGH.</strong> Request Mo Casey introduction to Maria Lopez. Draft email referencing SB 13 committee formation and compliance timeline pressure. Estimated close: 60-90 days. Deal size: $18-24K ARR.
+            </div>
+            <div style="margin-top: 12px; display: flex; gap: 8px;">
+              <button class="btn btn-primary btn-sm">Draft Outreach</button>
+              <button class="btn btn-sm">Create Deal</button>
+              <button class="btn btn-sm">View Full Profile</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- VIEW: SIGNALS                     -->
+<!-- ================================ -->
+<div class="view" id="view-signals">
+  <div class="section-header">
+    <h2>Signal Intelligence</h2>
+    <div class="filter-bar">
+      <button class="filter-chip active">All</button>
+      <button class="filter-chip">Challenges</button>
+      <button class="filter-chip">Board Minutes</button>
+      <button class="filter-chip">Transcripts</button>
+      <button class="filter-chip">Legislation</button>
+      <button class="filter-chip">News</button>
+    </div>
+  </div>
+  <div class="signals-layout">
+    <div class="signals-main">
+      <div class="signal-card">
+        <div class="signal-card-header">
+          <span class="signal-type-tag type-challenge">Book Challenge</span>
+          <span style="font-size: 12px; color: var(--muted);">2 hours ago &middot; Score: 92</span>
+        </div>
+        <div class="signal-card-title">Katy ISD: 3 formal challenges filed — committee review required</div>
+        <div class="signal-card-body">Three titles challenged under SB 13 formal process. District has 30 days to convene review committee. No existing compliance tooling in place.</div>
+        <div class="signal-card-footer">
+          <div><span class="badge badge-prospect" style="margin-right: 4px;">Katy ISD</span><span class="badge badge-esc">Region 4</span></div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-primary btn-sm">Draft Outreach</button>
+            <button class="btn btn-sm">View District</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-card-header">
+          <span class="signal-type-tag type-board">Board Minutes</span>
+          <span style="font-size: 12px; color: var(--muted);">6 hours ago &middot; Score: 88</span>
+        </div>
+        <div class="signal-card-title">Conroe ISD board approved $45K budget for "library compliance technology"</div>
+        <div class="signal-card-body">Agenda item 12.1 passed unanimously. Budget earmarked for FY26-27. RFP expected May 2026. Current customer — expansion opportunity.</div>
+        <div class="signal-card-footer">
+          <div><span class="badge badge-customer" style="margin-right: 4px;">Customer</span><span class="badge badge-esc">Region 6</span></div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-primary btn-sm">Expansion Play</button>
+            <button class="btn btn-sm">View District</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-card-header">
+          <span class="signal-type-tag type-transcript">Transcript</span>
+          <span style="font-size: 12px; color: var(--muted);">Yesterday &middot; Score: 71</span>
+        </div>
+        <div class="signal-card-title">Jan + Tila standup: Lewisville ISD librarian asked about bulk review workflows</div>
+        <div class="signal-card-body">Head librarian called about handling 200+ titles. Currently using spreadsheets. No deal exists.</div>
+        <div class="signal-card-footer">
+          <div><span class="badge badge-prospect">New Lead</span></div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-primary btn-sm">Create Deal</button>
+            <button class="btn btn-sm">Assign to Tila</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-card-header">
+          <span class="signal-type-tag type-legislation">Legislation</span>
+          <span style="font-size: 12px; color: var(--muted);">2 days ago &middot; Score: 55</span>
+        </div>
+        <div class="signal-card-title">SB 412 amendment: extends compliance deadline for districts under 5,000 students</div>
+        <div class="signal-card-body">If passed, ~800 smaller districts gain 12-month extension. Reduces urgency for small-district pipeline but increases window for mid-size targets.</div>
+        <div class="signal-card-footer">
+          <div><span class="badge badge-at-risk">Pipeline Impact</span></div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-sm">Impact Analysis</button>
+            <button class="btn btn-sm">Dismiss</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="signal-card">
+        <div class="signal-card-header">
+          <span class="signal-type-tag type-news">News</span>
+          <span style="font-size: 12px; color: var(--muted);">3 days ago &middot; Score: 48</span>
+        </div>
+        <div class="signal-card-title">Texas Tribune: "School libraries face unprecedented review burden under SB 13"</div>
+        <div class="signal-card-body">Feature article quoting multiple district librarians on compliance workload. Three Bookmarked customers quoted positively. Potential PR/marketing asset.</div>
+        <div class="signal-card-footer">
+          <div><span class="badge badge-customer">PR Opportunity</span></div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-sm">Share with Marketing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="signals-sidebar">
+      <div class="sidebar-heading">Signal Sources</div>
+      <div class="sidebar-stat"><span class="ss-label">Book Challenges</span><span class="ss-value" style="color: var(--accent);">Active</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Board Minutes</span><span class="ss-value" style="color: var(--accent);">Active</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Plaud Transcripts</span><span class="ss-value" style="color: var(--accent);">Active</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Google Meet Notes</span><span class="ss-value" style="color: var(--accent);">Active</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Texas Legislature</span><span class="ss-value" style="color: var(--accent);">Active</span></div>
+      <div class="sidebar-stat"><span class="ss-label">News / Social</span><span class="ss-value" style="color: #eab308;">Monitoring</span></div>
+
+      <div class="sidebar-heading">Stats (30 days)</div>
+      <div class="sidebar-stat"><span class="ss-label">Signals captured</span><span class="ss-value">147</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Actioned</span><span class="ss-value">89</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Deals created</span><span class="ss-value">12</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Outreach drafted</span><span class="ss-value">23</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Avg signal score</span><span class="ss-value">68</span></div>
+
+      <div class="sidebar-heading">Top Districts by Signal</div>
+      <div class="sidebar-stat"><span class="ss-label">Katy ISD</span><span class="ss-value" style="color: var(--warning);">3 signals</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Conroe ISD</span><span class="ss-value">2 signals</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Houston ISD</span><span class="ss-value">2 signals</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Arlington ISD</span><span class="ss-value">1 signal</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- VIEW: RELATIONSHIPS               -->
+<!-- ================================ -->
+<div class="view" id="view-relationships">
+  <div class="rel-layout">
+    <div class="rel-graph">
+      <div class="graph-visual">
+        <div class="graph-node center" style="left: 270px; top: 210px;">Book-<br>marked</div>
+        <div class="graph-node lg" style="left: 110px; top: 90px;">Mo<br>Casey</div>
+        <div class="graph-node lg" style="left: 420px; top: 100px;">John<br>Petri</div>
+        <div class="graph-node lg" style="left: 100px; top: 340px;">Region 4<br>ESC</div>
+        <div class="graph-node lg" style="left: 420px; top: 330px;">Region 10<br>ESC</div>
+        <div class="graph-node md" style="left: 0px; top: 180px;">Katy<br>ISD</div>
+        <div class="graph-node md" style="left: 540px; top: 40px;">Dallas<br>ISD</div>
+        <div class="graph-node md" style="left: 550px; top: 200px;">Plano<br>ISD</div>
+        <div class="graph-node sm" style="left: 0px; top: 400px;">Conroe<br>ISD</div>
+        <div class="graph-node sm" style="left: 260px; top: 430px;">Spring<br>ISD</div>
+        <div class="graph-node sm" style="left: 520px; top: 410px;">Frisco<br>ISD</div>
+        <div class="graph-node sm" style="left: 180px; top: 440px;">Cy-Fair<br>ISD</div>
+
+        <div style="position: absolute; bottom: 10px; left: 0; font-size: 11px; color: var(--muted); display: flex; gap: 16px;">
+          <span><span style="color: var(--accent);">&#9679;</span> Bookmarked</span>
+          <span><span style="color: var(--accent); opacity: 0.6;">&#9679;</span> Strong Connection</span>
+          <span><span style="color: var(--deep-green);">&#9679;</span> District</span>
+          <span><span style="color: var(--muted);">&#9679;</span> Emerging</span>
+        </div>
+      </div>
+    </div>
+    <div class="rel-panel">
+      <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 14px;">Relationship Explorer</h3>
+      <div class="rel-query-box">
+        <input type="text" class="rel-query-input" value="Best path into Katy ISD?" readonly>
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">Strongest path (2 hops):</div>
+        <div class="rel-path">
+          <span class="path-node">Bookmarked</span>
+          <span class="path-arrow">&rarr;</span>
+          <span class="path-node" style="border-color: var(--accent);">Mo Casey</span>
+          <span class="path-arrow">&rarr;</span>
+          <span class="path-node" style="border-color: var(--success);">Maria Lopez</span>
+        </div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5;">
+          <strong>Confidence:</strong> High<br>
+          <strong>Path type:</strong> Warm introduction<br>
+          <strong>Entry point:</strong> Curriculum Director (budget authority)
+        </div>
+      </div>
+      <div class="rel-query-box">
+        <div style="font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 8px;">ALTERNATIVE PATH</div>
+        <div class="rel-path">
+          <span class="path-node">Bookmarked</span>
+          <span class="path-arrow">&rarr;</span>
+          <span class="path-node">John Petri</span>
+          <span class="path-arrow">&rarr;</span>
+          <span class="path-node" style="border-color: var(--warning);">Dr. Dawn</span>
+        </div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 8px;">Board-level influence &middot; Use when curriculum path stalls</div>
+      </div>
+
+      <div class="sidebar-heading">Network Stats</div>
+      <div class="sidebar-stat"><span class="ss-label">Total relationships</span><span class="ss-value">342</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Key connectors</span><span class="ss-value">8</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Districts reachable (2 hops)</span><span class="ss-value">47</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Avg path length</span><span class="ss-value">2.3 hops</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- VIEW: CUSTOMER SUCCESS            -->
+<!-- ================================ -->
+<div class="view" id="view-cs">
+  <div class="section-header">
+    <h2>Customer Success</h2>
+    <div class="filter-bar">
+      <button class="filter-chip active">All Customers</button>
+      <button class="filter-chip">Onboarding</button>
+      <button class="filter-chip">At Risk</button>
+      <button class="filter-chip">Renewals (90d)</button>
+      <button class="filter-chip">Expansion</button>
+    </div>
+  </div>
+
+  <div class="metric-bar">
+    <div class="metric">
+      <div class="metric-label">Active Customers</div>
+      <div class="metric-value accent">47</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Net Revenue Retention</div>
+      <div class="metric-value accent">112%</div>
+      <div class="metric-delta">Target: 110%</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Onboarding</div>
+      <div class="metric-value">6</div>
+      <div class="metric-delta neg">2 stalled</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">At Risk</div>
+      <div class="metric-value warn">3</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Renewals (90d)</div>
+      <div class="metric-value">12</div>
+      <div class="metric-delta">$168K ARR</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Avg Health Score</div>
+      <div class="metric-value accent">78</div>
+    </div>
+  </div>
+
+  <div class="cs-layout">
+    <div class="cs-main">
+      <!-- Onboarding Section -->
+      <div style="padding: 20px 24px;">
+        <div class="section-title" style="margin-top: 0;">Active Onboarding (6)</div>
+
+        <div class="onboarding-track">
+          <div class="ob-header">
+            <div>
+              <div class="ob-name">Georgetown ISD</div>
+              <div style="font-size: 12px; color: var(--muted);">Started Mar 15 &middot; Target: Apr 15 &middot; 31 days</div>
+            </div>
+            <span class="badge badge-healthy">On Track</span>
+          </div>
+          <div class="ob-progress-bar"><div class="ob-progress-fill good" style="width: 75%;"></div></div>
+          <div class="ob-steps">
+            <span class="ob-step done">Welcome Call</span>
+            <span class="ob-step done">SIS Upload</span>
+            <span class="ob-step done">Book Import</span>
+            <span class="ob-step current">Staff Training</span>
+            <span class="ob-step pending">Go-Live</span>
+            <span class="ob-step pending">30-Day Check</span>
+          </div>
+        </div>
+
+        <div class="onboarding-track">
+          <div class="ob-header">
+            <div>
+              <div class="ob-name">Pflugerville ISD</div>
+              <div style="font-size: 12px; color: var(--muted);">Started Feb 20 &middot; Target: Mar 20 &middot; <span style="color: var(--warning);">43 days (15 over)</span></div>
+            </div>
+            <span class="badge badge-hot">Stalled</span>
+          </div>
+          <div class="ob-progress-bar"><div class="ob-progress-fill stalled" style="width: 40%;"></div></div>
+          <div class="ob-steps">
+            <span class="ob-step done">Welcome Call</span>
+            <span class="ob-step done">SIS Upload</span>
+            <span class="ob-step current">Book Import</span>
+            <span class="ob-step pending">Staff Training</span>
+            <span class="ob-step pending">Go-Live</span>
+            <span class="ob-step pending">30-Day Check</span>
+          </div>
+          <div style="margin-top: 8px; padding: 8px 10px; background: rgba(255,105,46,0.08); border-radius: 4px; font-size: 12px; color: var(--warning);">
+            <strong>Stall reason:</strong> Waiting on IT department to provide SIS export in correct format. Last contact: Mar 28. Tila following up.
+          </div>
+        </div>
+
+        <div class="onboarding-track">
+          <div class="ob-header">
+            <div>
+              <div class="ob-name">Manor ISD</div>
+              <div style="font-size: 12px; color: var(--muted);">Started Mar 25 &middot; Target: Apr 25 &middot; 10 days</div>
+            </div>
+            <span class="badge badge-healthy">On Track</span>
+          </div>
+          <div class="ob-progress-bar"><div class="ob-progress-fill good" style="width: 33%;"></div></div>
+          <div class="ob-steps">
+            <span class="ob-step done">Welcome Call</span>
+            <span class="ob-step current">SIS Upload</span>
+            <span class="ob-step pending">Book Import</span>
+            <span class="ob-step pending">Staff Training</span>
+            <span class="ob-step pending">Go-Live</span>
+            <span class="ob-step pending">30-Day Check</span>
+          </div>
+        </div>
+
+        <!-- Customer Health Grid -->
+        <div class="section-title">Customer Health</div>
+        <div class="health-grid" style="padding: 0;">
+          <div class="customer-card">
+            <div class="cc-header">
+              <div>
+                <div class="cc-name">Round Rock ISD</div>
+                <div class="cc-meta">52K students &middot; Region 13 &middot; Customer since Jan 2025</div>
+              </div>
+              <div class="health-score good">92</div>
+            </div>
+            <div class="cc-metrics">
+              <div class="cc-metric"><div class="ccm-value accent">847</div><div class="ccm-label">Reviews Done</div></div>
+              <div class="cc-metric"><div class="ccm-value">12</div><div class="ccm-label">Active Users</div></div>
+              <div class="cc-metric"><div class="ccm-value">3d</div><div class="ccm-label">Last Login</div></div>
+            </div>
+            <div class="cc-status"><strong>Renewal:</strong> Aug 2026 &middot; <span style="color: var(--accent);">Expansion likely (asked about SB 13 module)</span></div>
+          </div>
+
+          <div class="customer-card">
+            <div class="cc-header">
+              <div>
+                <div class="cc-name">Leander ISD</div>
+                <div class="cc-meta">42K students &middot; Region 13 &middot; Renewed Feb 2026</div>
+              </div>
+              <div class="health-score good">88</div>
+            </div>
+            <div class="cc-metrics">
+              <div class="cc-metric"><div class="ccm-value accent">623</div><div class="ccm-label">Reviews Done</div></div>
+              <div class="cc-metric"><div class="ccm-value">8</div><div class="ccm-label">Active Users</div></div>
+              <div class="cc-metric"><div class="ccm-value">1d</div><div class="ccm-label">Last Login</div></div>
+            </div>
+            <div class="cc-status"><strong>Status:</strong> Renewed for 25/26. High engagement. NPS: 9.</div>
+          </div>
+
+          <div class="customer-card">
+            <div class="cc-header">
+              <div>
+                <div class="cc-name">Conroe ISD</div>
+                <div class="cc-meta">72K students &middot; Region 6 &middot; Customer since Mar 2025</div>
+              </div>
+              <div class="health-score ok">64</div>
+            </div>
+            <div class="cc-metrics">
+              <div class="cc-metric"><div class="ccm-value">312</div><div class="ccm-label">Reviews Done</div></div>
+              <div class="cc-metric"><div class="ccm-value warn">4</div><div class="ccm-label">Active Users</div></div>
+              <div class="cc-metric"><div class="ccm-value warn">14d</div><div class="ccm-label">Last Login</div></div>
+            </div>
+            <div class="cc-status"><strong style="color: var(--warning);">Low engagement:</strong> Only 4 of 15 licensed users active. Board just approved $45K compliance budget — <span style="color: var(--accent);">expansion opportunity if re-engaged.</span></div>
+          </div>
+
+          <div class="customer-card">
+            <div class="cc-header">
+              <div>
+                <div class="cc-name">Del Valle ISD</div>
+                <div class="cc-meta">12K students &middot; Region 13 &middot; Customer since Sep 2025</div>
+              </div>
+              <div class="health-score bad">38</div>
+            </div>
+            <div class="cc-metrics">
+              <div class="cc-metric"><div class="ccm-value" style="color: #ef4444;">41</div><div class="ccm-label">Reviews Done</div></div>
+              <div class="cc-metric"><div class="ccm-value" style="color: #ef4444;">1</div><div class="ccm-label">Active Users</div></div>
+              <div class="cc-metric"><div class="ccm-value" style="color: #ef4444;">32d</div><div class="ccm-label">Last Login</div></div>
+            </div>
+            <div class="cc-status"><strong style="color: #ef4444;">Churn risk:</strong> Champion (head librarian) left the district in February. No new champion identified. Renewal: July 2026.</div>
+          </div>
+
+          <div class="customer-card">
+            <div class="cc-header">
+              <div>
+                <div class="cc-name">Hays CISD</div>
+                <div class="cc-meta">23K students &middot; Region 13 &middot; Customer since Nov 2025</div>
+              </div>
+              <div class="health-score good">81</div>
+            </div>
+            <div class="cc-metrics">
+              <div class="cc-metric"><div class="ccm-value accent">389</div><div class="ccm-label">Reviews Done</div></div>
+              <div class="cc-metric"><div class="ccm-value">6</div><div class="ccm-label">Active Users</div></div>
+              <div class="cc-metric"><div class="ccm-value">2d</div><div class="ccm-label">Last Login</div></div>
+            </div>
+            <div class="cc-status"><strong>Status:</strong> Strong adoption. NPS: 8. Asked about API integration with their ILS.</div>
+          </div>
+
+          <div class="customer-card">
+            <div class="cc-header">
+              <div>
+                <div class="cc-name">Lake Travis ISD</div>
+                <div class="cc-meta">11K students &middot; Region 13 &middot; Customer since Jan 2026</div>
+              </div>
+              <div class="health-score ok">59</div>
+            </div>
+            <div class="cc-metrics">
+              <div class="cc-metric"><div class="ccm-value">87</div><div class="ccm-label">Reviews Done</div></div>
+              <div class="cc-metric"><div class="ccm-value">3</div><div class="ccm-label">Active Users</div></div>
+              <div class="cc-metric"><div class="ccm-value warn">9d</div><div class="ccm-label">Last Login</div></div>
+            </div>
+            <div class="cc-status"><strong style="color: var(--warning);">Watch:</strong> Adoption slower than expected for district this size. Check-in scheduled Apr 8.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-sidebar">
+      <div class="sidebar-heading">CS Actions Today</div>
+      <div class="action-item" style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+        <div class="action-dot high"></div>
+        <div class="action-content">
+          <div class="action-title">Del Valle ISD — find new champion</div>
+          <div class="action-desc">Previous champion left. Identify and contact replacement.</div>
+        </div>
+      </div>
+      <div class="action-item" style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+        <div class="action-dot high"></div>
+        <div class="action-content">
+          <div class="action-title">Pflugerville ISD — unblock onboarding</div>
+          <div class="action-desc">SIS format issue. Escalate to IT director.</div>
+        </div>
+      </div>
+      <div class="action-item" style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+        <div class="action-dot med"></div>
+        <div class="action-content">
+          <div class="action-title">Conroe ISD — re-engagement call</div>
+          <div class="action-desc">Low usage + budget approved = expansion if we re-engage.</div>
+        </div>
+      </div>
+      <div class="action-item" style="padding: 10px 0;">
+        <div class="action-dot low"></div>
+        <div class="action-content">
+          <div class="action-title">Georgetown ISD — staff training prep</div>
+          <div class="action-desc">Training scheduled next week. Prep materials.</div>
+        </div>
+      </div>
+
+      <div class="sidebar-heading">Upcoming Renewals</div>
+      <div class="sidebar-stat"><span class="ss-label">Del Valle ISD</span><span class="ss-value" style="color: #ef4444;">Jul 2026</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Round Rock ISD</span><span class="ss-value" style="color: var(--accent);">Aug 2026</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Hays CISD</span><span class="ss-value">Nov 2026</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Lake Travis ISD</span><span class="ss-value">Jan 2027</span></div>
+
+      <div class="sidebar-heading">Health Distribution</div>
+      <div class="sidebar-stat"><span class="ss-label">Healthy (70+)</span><span class="ss-value" style="color: var(--accent);">38</span></div>
+      <div class="sidebar-stat"><span class="ss-label">Watch (50-69)</span><span class="ss-value" style="color: #eab308;">6</span></div>
+      <div class="sidebar-stat"><span class="ss-label">At Risk (&lt;50)</span><span class="ss-value" style="color: #ef4444;">3</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- VIEW: DAILY ACTIONS               -->
+<!-- ================================ -->
+<div class="view" id="view-daily">
+  <div class="section-header">
+    <h2 id="dailyTitle">Jan's Daily Actions — Friday, April 4</h2>
+    <div class="persona-switcher">
+      <button class="persona-btn active" onclick="switchDailyPersona(this, 'jan')">Jan</button>
+      <button class="persona-btn" onclick="switchDailyPersona(this, 'tila')">Tila</button>
+      <button class="persona-btn" onclick="switchDailyPersona(this, 'steve')">Steve</button>
+    </div>
+  </div>
+  <div class="daily-layout">
+    <div class="daily-card">
+      <div class="dc-header"><h3>Follow Up Today</h3><span class="dc-count">5</span></div>
+      <div class="dc-body">
+        <div class="action-item">
+          <div class="action-dot high"></div>
+          <div class="action-content">
+            <div class="action-title">Cypress-Fairbanks ISD — Send revised 3-year quote</div>
+            <div class="action-desc">Dr. Williams requested multi-year pricing. $28K ARR deal.</div>
+            <div class="action-reason">Closing signal: asked for multi-year pricing</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-dot high"></div>
+          <div class="action-content">
+            <div class="action-title">Katy ISD — Request Mo Casey introduction</div>
+            <div class="action-desc">Draft email ready for review. Target: Maria Lopez, Curriculum Director.</div>
+            <div class="action-reason">Signal: SB 13 committee formed Tuesday</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-dot med"></div>
+          <div class="action-content">
+            <div class="action-title">Arlington ISD — Check on proposal status</div>
+            <div class="action-desc">Proposal sent 10 days ago. No response since Apr 1.</div>
+            <div class="action-reason">Stale: 10 days no response</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-dot med"></div>
+          <div class="action-content">
+            <div class="action-title">Conroe ISD — Expansion conversation</div>
+            <div class="action-desc">Board approved $45K compliance budget. Current customer.</div>
+            <div class="action-reason">Signal: board budget approval yesterday</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-dot low"></div>
+          <div class="action-content">
+            <div class="action-title">Region 7 ESC — Partnership agreement follow-up</div>
+            <div class="action-desc">Legal review in progress. Check timeline with coordinator.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="daily-card">
+      <div class="dc-header"><h3>Deals Needing Attention</h3><span class="dc-count">3</span></div>
+      <div class="dc-body">
+        <div class="action-item">
+          <div class="action-dot high"></div>
+          <div class="action-content">
+            <div class="action-title">Houston ISD stuck in Qualified for 22 days</div>
+            <div class="action-desc">$36K deal. No demo scheduled despite contact engagement.</div>
+            <div class="action-reason">SLA breach: target &lt;14 days in Qualified</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-dot med"></div>
+          <div class="action-content">
+            <div class="action-title">Plano ISD — Board vote results due</div>
+            <div class="action-desc">Board voted Mar 28. Check outcome for forecast.</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-dot low"></div>
+          <div class="action-content">
+            <div class="action-title">Spring ISD demo prep — Monday</div>
+            <div class="action-desc">Review SB 13 status, customize for 42K students.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="daily-card full-width">
+      <div class="dc-header"><h3>Intelligence Briefing</h3></div>
+      <div class="dc-body">
+        <div class="action-item">
+          <div class="action-dot high"></div>
+          <div class="action-content">
+            <div class="action-title">SB 412 amendment could shift small-district pipeline</div>
+            <div class="action-desc">~800 districts under 5K students get 12-month extension. Reprioritize toward mid-size (5K-25K).</div>
+            <div class="action-reason">Action: Adjust outbound targeting</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-dot med"></div>
+          <div class="action-content">
+            <div class="action-title">Lewisville ISD librarian called about bulk review workflows</div>
+            <div class="action-desc">200+ titles, using spreadsheets. No deal exists. Assign to Tila.</div>
+            <div class="action-reason">Action: Create deal from signal</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-dot low"></div>
+          <div class="action-content">
+            <div class="action-title">Texas Tribune article mentions 3 Bookmarked customers positively</div>
+            <div class="action-desc">PR opportunity — share with marketing for social amplification.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- VIEW: SETTINGS                    -->
+<!-- ================================ -->
+<div class="view" id="view-settings">
+  <div class="settings-layout">
+    <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Settings</h2>
+    <p style="color: var(--muted); margin-bottom: 32px;">Configure your CRM, integrations, and data sources.</p>
+
+    <div class="settings-section">
+      <h3>Data Integrations</h3>
+      <div class="ss-desc">Connect your tools so Claude can read and write data across your stack.</div>
+
+      <div class="integration-row">
+        <div class="integ-icon">&#x1F5C4;</div>
+        <div class="integ-info">
+          <div class="integ-name">Supabase (PostgreSQL)</div>
+          <div class="integ-status connected">Connected &middot; 11 tables &middot; supabase.bookmarked.com</div>
+        </div>
+        <button class="btn btn-sm">Configure</button>
+      </div>
+      <div class="integration-row">
+        <div class="integ-icon">&#x1F4AC;</div>
+        <div class="integ-info">
+          <div class="integ-name">Slack</div>
+          <div class="integ-status connected">Connected &middot; Steve's workspace</div>
+        </div>
+        <button class="btn btn-sm">Configure</button>
+      </div>
+      <div class="integration-row">
+        <div class="integ-icon">&#x1F4E7;</div>
+        <div class="integ-info">
+          <div class="integ-name">Email (Loops)</div>
+          <div class="integ-status connected">Connected &middot; Sequences active</div>
+        </div>
+        <button class="btn btn-sm">Configure</button>
+      </div>
+      <div class="integration-row">
+        <div class="integ-icon">&#x1F399;</div>
+        <div class="integ-info">
+          <div class="integ-name">Plaud (Transcripts)</div>
+          <div class="integ-status connected">Connected &middot; Auto-ingest on</div>
+        </div>
+        <button class="btn btn-sm">Configure</button>
+      </div>
+      <div class="integration-row">
+        <div class="integ-icon">&#x1F4CB;</div>
+        <div class="integ-info">
+          <div class="integ-name">Arrows.to (Onboarding)</div>
+          <div class="integ-status pending">Pending migration decision</div>
+        </div>
+        <button class="btn btn-warning btn-sm">Evaluate</button>
+      </div>
+      <div class="integration-row">
+        <div class="integ-icon">&#x1F50D;</div>
+        <div class="integ-info">
+          <div class="integ-name">NocoDB (Visual Layer)</div>
+          <div class="integ-status pending">Optional — add for team visual access</div>
+        </div>
+        <button class="btn btn-sm">Set Up</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>Signal Sources</h3>
+      <div class="ss-desc">Configure what intelligence Claude monitors and how signals are scored.</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Book Challenge Monitoring</div>
+          <div class="setting-desc">Scan district board agendas and public records for challenge filings</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Board Minutes Parsing</div>
+          <div class="setting-desc">Extract compliance decisions, budget approvals, committee formations</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Transcript Intelligence</div>
+          <div class="setting-desc">Extract signals from Plaud and Google Meet transcripts</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Legislative Tracking</div>
+          <div class="setting-desc">Monitor Texas legislature for SB 13, SB 412, and related bills</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">News & Social Monitoring</div>
+          <div class="setting-desc">Track media coverage of book challenges and library policies</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>Pipeline Configuration</h3>
+      <div class="ss-desc">Stage definitions, SLAs, and automation rules.</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Stage SLA Alerts</div>
+          <div class="setting-desc">Flag deals exceeding target days in any stage</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Auto-Create Deals from Signals</div>
+          <div class="setting-desc">Signals above score 80 auto-create draft deals for review</div>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Daily Action Generation</div>
+          <div class="setting-desc">Claude generates prioritized action lists each morning</div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+/* ========== TAB SWITCHING ========== */
+function switchView(view, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function switchViewByName(view) {
+  var tabs = document.querySelectorAll('.nav-tab');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+  document.getElementById('view-' + view).classList.add('active');
+  tabs.forEach(function(t) {
+    if (t.textContent.toLowerCase().indexOf(view === 'cs' ? 'customer' : view === 'orgs' ? 'organization' : view) === 0) t.classList.add('active');
+  });
+}
+
+/* ========== PERSONA SWITCHER ========== */
+function switchPersona(btn, persona) {
+  btn.parentElement.querySelectorAll('.persona-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  var g = document.getElementById('greetingArea');
+  if (g) {
+    var data = {
+      steve: { h: 'Good morning, Steve', p: '3 signals overnight \u00b7 2 deals need attention \u00b7 Pipeline at $487K weighted' },
+      jan: { h: 'Good morning, Jan', p: '5 follow-ups today \u00b7 1 deal closing this week \u00b7 2 new signals to review' },
+      tila: { h: 'Good morning, Tila', p: '3 calls scheduled \u00b7 Lewisville ISD wants bulk workflow info \u00b7 2 onboarding check-ins' },
+      esc: { h: 'Welcome, ESC Partner', p: 'View your districts, pipeline status, and shared resources' }
+    };
+    g.querySelector('h1').textContent = data[persona].h;
+    g.querySelector('p').textContent = data[persona].p;
+  }
+}
+
+function switchDailyPersona(btn, persona) {
+  btn.parentElement.querySelectorAll('.persona-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  var titles = {
+    jan: "Jan's Daily Actions \u2014 Friday, April 4",
+    tila: "Tila's Daily Actions \u2014 Friday, April 4",
+    steve: "Steve's Daily Actions \u2014 Friday, April 4"
+  };
+  document.getElementById('dailyTitle').textContent = titles[persona];
+}
+
+/* ========== DEAL DATA ========== */
+var deals = {
+  cypress: { name:'Cypress-Fairbanks ISD', sub:'Cy-Fair ISD \u00b7 Region 4 ESC \u00b7 $28,000 ARR', badges:'<span class="badge badge-hot">Closing</span> <span class="badge badge-prospect">New Business</span>', stage:5, amount:'$28,000/yr', owner:'Jan', close:'Apr 11, 2026', students:'116,000', dm:'Dr. Mark Williams', days:'34 days', prob:'80%', activity:[{dot:'call',t:'<strong>Call with Dr. Williams</strong> \u2014 requested 3-year pricing',d:'Apr 2, 2026 \u00b7 Jan'},{dot:'email',t:'<strong>Proposal sent</strong> \u2014 Standard + SB13 module',d:'Mar 25, 2026 \u00b7 Jan'},{dot:'call',t:'<strong>Demo completed</strong> \u2014 45 min, 3 stakeholders',d:'Mar 18, 2026 \u00b7 Jan + Steve'},{dot:'signal',t:'<strong>Signal:</strong> Board approved compliance budget',d:'Mar 12, 2026 \u00b7 Board minutes'}], rec:'<strong style="color:var(--accent);">Send revised 3-year quote today.</strong> Dr. Williams specifically requested multi-year pricing \u2014 this is a strong closing signal. Include 10% discount for 3-year commitment ($75,600 total vs $84,000). Deal should close by Friday.' },
+  lewisville: { name:'Lewisville ISD', sub:'Lewisville ISD \u00b7 Region 11 \u00b7 $16,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span>', stage:1, amount:'$16,000/yr', owner:'Tila', close:'May 15, 2026', students:'51,000', dm:'TBD', days:'2 days', prob:'15%', activity:[{dot:'call',t:'<strong>Inbound call</strong> \u2014 asked about compliance workflows',d:'Apr 4, 2026 \u00b7 Tila'}], rec:'<strong style="color:var(--accent);">Schedule discovery call.</strong> Inbound interest is warm \u2014 qualify budget authority and SB 13 timeline within 48 hours.' },
+  garland: { name:'Garland ISD', sub:'Garland ISD \u00b7 Region 10 \u00b7 $14,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span>', stage:1, amount:'$14,000/yr', owner:'Jan', close:'Jun 1, 2026', students:'57,000', dm:'TBD', days:'5 days', prob:'10%', activity:[{dot:'note',t:'<strong>Research:</strong> SB 13 committee active since Feb',d:'Apr 1, 2026 \u00b7 Signal'}], rec:'<strong style="color:var(--accent);">Needs qualification.</strong> SB 13 signal is promising but no contact established yet. Check for relationship paths.' },
+  houston: { name:'Houston ISD', sub:'Houston ISD \u00b7 Region 4 \u00b7 $36,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span> <span class="badge badge-churning">Stale</span>', stage:2, amount:'$36,000/yr', owner:'Jan', close:'Jun 30, 2026', students:'187,000', dm:'Committee', days:'22 days', prob:'25%', activity:[{dot:'email',t:'<strong>Follow-up email sent</strong> \u2014 no response',d:'Mar 20, 2026 \u00b7 Jan'},{dot:'signal',t:'<strong>SB13 Committee</strong> formed',d:'Mar 14, 2026 \u00b7 Board minutes'}], rec:'<strong style="color:var(--warning);">SLA breach \u2014 22 days without progress.</strong> Escalate: try alternative contact or leverage ESC Region 4 relationship for warm re-intro.' },
+  frisco: { name:'Frisco ISD', sub:'Frisco ISD \u00b7 Region 10 \u00b7 $12,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span>', stage:2, amount:'$12,000/yr', owner:'Tila', close:'May 30, 2026', students:'75,000', dm:'TBD', days:'8 days', prob:'30%', activity:[{dot:'call',t:'<strong>Qualification call</strong> \u2014 interested in pilot',d:'Mar 29, 2026 \u00b7 Tila'}], rec:'<strong style="color:var(--accent);">Move to demo.</strong> Interest confirmed \u2014 schedule demo within the week.' },
+  plano: { name:'Plano ISD', sub:'Plano ISD \u00b7 Region 10 \u00b7 $24,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span>', stage:2, amount:'$24,000/yr', owner:'Jan', close:'May 15, 2026', students:'53,000', dm:'Board', days:'14 days', prob:'35%', activity:[{dot:'signal',t:'<strong>Board Vote Mar 28</strong> \u2014 compliance budget approved',d:'Mar 28, 2026 \u00b7 Board minutes'}], rec:'<strong style="color:var(--accent);">Board approved budget.</strong> Strike now \u2014 schedule demo before end of week.' },
+  katy: { name:'Katy ISD', sub:'Katy ISD \u00b7 Region 4 \u00b7 $22,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span> <span class="badge badge-hot">High Signal</span>', stage:3, amount:'$22,000/yr', owner:'Jan', close:'Jun 15, 2026', students:'85,241', dm:'Maria Lopez', days:'12 days', prob:'40%', activity:[{dot:'signal',t:'<strong>Board challenge:</strong> 3 books challenged in Feb',d:'Mar 2026 \u00b7 Challenge Monitor'},{dot:'call',t:'<strong>Mo Casey</strong> confirmed warm intro to Maria Lopez',d:'Mar 28, 2026 \u00b7 Transcript'}], rec:'<strong style="color:var(--accent);">Use Mo Casey intro.</strong> Board forming SB 13 committee \u2014 compliance tooling needed in 60-90 days. Demo should emphasize compliance workflow.' },
+  spring: { name:'Spring ISD', sub:'Spring ISD \u00b7 Region 4 \u00b7 $18,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span>', stage:3, amount:'$18,000/yr', owner:'Tila', close:'May 20, 2026', students:'33,000', dm:'TBD', days:'6 days', prob:'45%', activity:[{dot:'note',t:'<strong>Demo scheduled</strong> Mon 4/7',d:'Apr 3, 2026 \u00b7 Tila'}], rec:'<strong style="color:var(--accent);">Demo Monday.</strong> Prep compliance-focused deck. Tila leading.' },
+  northside: { name:'Northside ISD', sub:'Northside ISD \u00b7 Region 20 \u00b7 $20,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span>', stage:3, amount:'$20,000/yr', owner:'Jan', close:'Jun 1, 2026', students:'106,000', dm:'TBD', days:'10 days', prob:'35%', activity:[{dot:'call',t:'<strong>Discovery call completed</strong>',d:'Mar 27, 2026 \u00b7 Jan'}], rec:'<strong style="color:var(--accent);">Schedule demo.</strong> Large district with strong potential \u2014 prioritize.' },
+  arlington: { name:'Arlington ISD', sub:'Arlington ISD \u00b7 Region 11 \u00b7 $28,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span> <span class="badge badge-churning">Stale</span>', stage:4, amount:'$28,000/yr', owner:'Jan', close:'Apr 30, 2026', students:'57,000', dm:'Dr. Sarah Kim', days:'10 days', prob:'55%', activity:[{dot:'email',t:'<strong>Proposal sent</strong> \u2014 awaiting response',d:'Mar 27, 2026 \u00b7 Jan'},{dot:'email',t:'<strong>Follow-up</strong> \u2014 no response',d:'Apr 1, 2026 \u00b7 Jan'}], rec:'<strong style="color:var(--warning);">No response in 10 days.</strong> Try phone call to Dr. Kim directly, or find alternate champion.' },
+  region7: { name:'Region 7 ESC', sub:'ESC Partnership \u00b7 $15,000 ARR', badges:'<span class="badge badge-esc">ESC Partner</span>', stage:4, amount:'$15,000/yr', owner:'Jan', close:'Apr 20, 2026', students:'N/A (53 districts)', dm:'Partnership Dir.', days:'18 days', prob:'60%', activity:[{dot:'call',t:'<strong>Partnership terms</strong> discussed',d:'Mar 25, 2026 \u00b7 Jan + Steve'}], rec:'<strong style="color:var(--accent);">ESC channel deal.</strong> Finalize partnership terms this week \u2014 opens 53 districts for referrals.' },
+  mesquite: { name:'Mesquite ISD', sub:'Mesquite ISD \u00b7 Region 10 \u00b7 $8,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span>', stage:4, amount:'$8,000/yr', owner:'Tila', close:'Apr 25, 2026', students:'38,000', dm:'Library Dir.', days:'12 days', prob:'50%', activity:[{dot:'email',t:'<strong>Pilot proposal</strong> sent',d:'Mar 28, 2026 \u00b7 Tila'}], rec:'<strong style="color:var(--accent);">Small but fast.</strong> Pilot deal \u2014 should close quickly if Library Director confirms.' },
+  killeen: { name:'Killeen ISD', sub:'Killeen ISD \u00b7 Region 12 \u00b7 $18,000 ARR', badges:'<span class="badge badge-prospect">Prospect</span>', stage:5, amount:'$18,000/yr (3-yr)', owner:'Jan', close:'Apr 18, 2026', students:'46,000', dm:'Superintendent', days:'28 days', prob:'70%', activity:[{dot:'call',t:'<strong>Multi-year terms</strong> negotiated',d:'Apr 1, 2026 \u00b7 Jan'}], rec:'<strong style="color:var(--accent);">Close by Apr 18.</strong> Multi-year commitment \u2014 finalize contract language.' },
+  roundrock: { name:'Round Rock ISD', sub:'Round Rock ISD \u00b7 Region 13 \u00b7 $22,000 ARR', badges:'<span class="badge badge-customer">Customer</span> <span class="badge badge-healthy">Healthy</span>', stage:6, amount:'$22,000/yr', owner:'Jan', close:'Won: Mar 1, 2026', students:'52,000', dm:'Library Services', days:'Closed', prob:'100%', activity:[{dot:'call',t:'<strong>Contract signed</strong>',d:'Mar 1, 2026'}], rec:'<strong style="color:var(--success);">Active customer.</strong> Onboarding in progress \u2014 check Arrows.to for milestone status.' },
+  leander: { name:'Leander ISD', sub:'Leander ISD \u00b7 Region 13 \u00b7 $18,000 ARR', badges:'<span class="badge badge-customer">Customer</span> <span class="badge badge-healthy">Renewed</span>', stage:6, amount:'$18,000/yr', owner:'Jan', close:'Renewed: Feb 15, 2026', students:'42,000', dm:'Head Librarian', days:'Closed', prob:'100%', activity:[{dot:'call',t:'<strong>Renewal signed</strong> \u2014 2-year term',d:'Feb 15, 2026'}], rec:'<strong style="color:var(--success);">Renewed customer.</strong> 2-year commitment. Expansion opportunity for full platform.' },
+  georgetown: { name:'Georgetown ISD', sub:'Georgetown ISD \u00b7 Region 13 \u00b7 $14,000 ARR', badges:'<span class="badge badge-customer">Customer</span>', stage:6, amount:'$14,000/yr', owner:'Jan', close:'Won: Jan 20, 2026', students:'14,000', dm:'Asst. Superintendent', days:'Closed', prob:'100%', activity:[{dot:'call',t:'<strong>Contract signed</strong>',d:'Jan 20, 2026'}], rec:'<strong style="color:var(--success);">Active customer.</strong> Small district, good reference account for Region 13 expansion.' }
+};
+
+/* ========== DEAL PANEL ========== */
+function openDeal(key) {
+  var d = deals[key];
+  if (!d) return;
+  var panel = document.getElementById('dealPanel');
+  var stageLabels = ['Intake','Qualified','Demo','Proposal','Negotiation','Won'];
+  var stageHTML = '<div class="stage-progress">';
+  for (var i = 1; i <= 6; i++) {
+    if (i < d.stage) stageHTML += '<div class="stage-bar complete"></div>';
+    else if (i === d.stage) stageHTML += '<div class="stage-bar current"></div>';
+    else stageHTML += '<div class="stage-bar"></div>';
+  }
+  stageHTML += '</div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">';
+  stageLabels.forEach(function(l,i) {
+    var color = (i+1 === d.stage) ? 'color:var(--warning);' : '';
+    stageHTML += '<span style="'+color+'">'+l+'</span>';
+  });
+  stageHTML += '</div>';
+  var actHTML = '';
+  d.activity.forEach(function(a) {
+    actHTML += '<div class="activity-item"><div class="activity-dot '+a.dot+'"></div><div><div class="activity-text">'+a.t+'</div><div class="activity-date">'+a.d+'</div></div></div>';
+  });
+  panel.innerHTML = '<div class="detail-header" style="position:relative;"><button onclick="closeDealPanel()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;" title="Close">&times;</button><h3>'+d.name+'</h3><div class="detail-sub">'+d.sub+'</div><div style="margin-top:10px;display:flex;gap:6px;">'+d.badges+'</div></div><div class="detail-section"><h4>Stage Progress</h4>'+stageHTML+'</div><div class="detail-section"><h4>Deal Details</h4><div class="detail-row"><span class="dr-label">Amount</span><span class="dr-value" style="color:var(--accent);">'+d.amount+'</span></div><div class="detail-row"><span class="dr-label">Owner</span><span class="dr-value">'+d.owner+'</span></div><div class="detail-row"><span class="dr-label">Close date</span><span class="dr-value">'+d.close+'</span></div><div class="detail-row"><span class="dr-label">Students</span><span class="dr-value">'+d.students+'</span></div><div class="detail-row"><span class="dr-label">Decision maker</span><span class="dr-value">'+d.dm+'</span></div><div class="detail-row"><span class="dr-label">Days in pipeline</span><span class="dr-value">'+d.days+'</span></div><div class="detail-row"><span class="dr-label">Probability</span><span class="dr-value" style="color:var(--accent);">'+d.prob+'</span></div></div><div class="detail-section"><h4>Activity</h4>'+actHTML+'</div><div class="detail-section"><h4>Claude Recommendation</h4><div style="background:var(--bg);padding:14px;border-radius:6px;border:1px solid var(--accent);font-size:13px;line-height:1.6;">'+d.rec+'</div><div style="margin-top:10px;display:flex;gap:8px;"><button class="btn btn-primary btn-sm">Draft Quote</button><button class="btn btn-sm">Log Activity</button></div></div>';
+  panel.classList.add('open');
+  document.querySelectorAll('.deal-card').forEach(function(c) { c.style.outline = 'none'; });
+}
+
+function closeDealPanel() {
+  document.getElementById('dealPanel').classList.remove('open');
+}
+
+/* ========== FILTER CHIPS ========== */
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('filter-chip')) {
+    var parent = e.target.closest('.filter-bar');
+    if (parent) {
+      parent.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
+      e.target.classList.add('active');
+    }
+  }
+});
+
+/* ========== ORG LIST ITEMS ========== */
+var orgData = {
+  'Katy ISD': { full:'Katy Independent School District', sub:'School District \u00b7 Region 4 ESC \u00b7 Katy, TX 77449', badges:'<span class="badge badge-prospect">Prospect</span> <span class="badge badge-hot">High Signal</span> <span class="badge badge-esc">Region 4</span>', students:'85,241', schools:'71', librarians:'68', revenue:'$1.2B', sb13:'Committee Forming', potential:'$18-24K' },
+  'Cypress-Fairbanks ISD': { full:'Cypress-Fairbanks Independent School District', sub:'School District \u00b7 Region 4 ESC \u00b7 Cypress, TX', badges:'<span class="badge badge-prospect">Prospect</span> <span class="badge badge-hot">Closing</span>', students:'116,000', schools:'92', librarians:'87', revenue:'$2.1B', sb13:'Active', potential:'$28K' },
+  'Round Rock ISD': { full:'Round Rock Independent School District', sub:'School District \u00b7 Region 13 ESC \u00b7 Round Rock, TX', badges:'<span class="badge badge-customer">Customer</span> <span class="badge badge-healthy">Healthy</span>', students:'52,000', schools:'56', librarians:'52', revenue:'$780M', sb13:'Compliant', potential:'$22K (active)' },
+  'Conroe ISD': { full:'Conroe Independent School District', sub:'School District \u00b7 Region 6 ESC \u00b7 Conroe, TX', badges:'<span class="badge badge-customer">Customer</span> <span class="badge badge-at-risk">Expansion</span>', students:'72,000', schools:'65', librarians:'60', revenue:'$1.0B', sb13:'Active', potential:'$32K' },
+  'Region 4 ESC': { full:'Region 4 Education Service Center', sub:'ESC \u00b7 Houston, TX', badges:'<span class="badge badge-esc">ESC Partner</span>', students:'1.1M (53 districts)', schools:'N/A', librarians:'N/A', revenue:'N/A', sb13:'Advisory', potential:'Channel' },
+  'Houston ISD': { full:'Houston Independent School District', sub:'School District \u00b7 Region 4 ESC \u00b7 Houston, TX', badges:'<span class="badge badge-prospect">Prospect</span>', students:'187,000', schools:'280', librarians:'265', revenue:'$4.4B', sb13:'Committee Active', potential:'$36K' },
+  'Leander ISD': { full:'Leander Independent School District', sub:'School District \u00b7 Region 13 ESC \u00b7 Leander, TX', badges:'<span class="badge badge-customer">Customer</span> <span class="badge badge-healthy">Renewed</span>', students:'42,000', schools:'44', librarians:'41', revenue:'$620M', sb13:'Compliant', potential:'$18K (renewed)' }
+};
+
+document.addEventListener('click', function(e) {
+  var item = e.target.closest('.org-list-item');
+  if (!item) return;
+  var list = item.closest('.org-list');
+  if (!list) return;
+  list.querySelectorAll('.org-list-item').forEach(function(i) { i.classList.remove('active'); });
+  item.classList.add('active');
+  var name = item.querySelector('.org-item-name').textContent;
+  var d = orgData[name];
+  if (!d) return;
+  var detail = document.querySelector('.org-detail');
+  if (!detail) return;
+  var sb13Color = (d.sb13 === 'Compliant') ? 'accent' : 'warn';
+  var potColor = d.potential.indexOf('active') >= 0 || d.potential.indexOf('renewed') >= 0 || d.potential === 'Channel' ? 'accent' : 'accent';
+  detail.innerHTML = '<div class="org-detail-header"><h2>'+d.full+'</h2><div class="org-subtitle">'+d.sub+'</div><div style="display:flex;gap:6px;">'+d.badges+'</div></div><div class="org-tabs"><button class="org-tab active">Overview</button><button class="org-tab">Contacts</button><button class="org-tab">Signals</button><button class="org-tab">Deals</button><button class="org-tab">Activity</button><button class="org-tab">Relationships</button></div><div class="org-content"><div class="data-grid"><div class="data-card"><div class="dc-label">Students</div><div class="dc-value">'+d.students+'</div></div><div class="data-card"><div class="dc-label">Schools</div><div class="dc-value">'+d.schools+'</div></div><div class="data-card"><div class="dc-label">Librarians</div><div class="dc-value">'+d.librarians+'</div></div><div class="data-card"><div class="dc-label">Revenue</div><div class="dc-value">'+d.revenue+'</div></div><div class="data-card"><div class="dc-label">SB 13 Status</div><div class="dc-value '+sb13Color+'">'+d.sb13+'</div></div><div class="data-card"><div class="dc-label">Deal Potential</div><div class="dc-value accent">'+d.potential+'</div></div></div></div>';
+});
+
+/* ========== ORG TABS ========== */
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('org-tab')) {
+    var parent = e.target.closest('.org-tabs');
+    if (parent) {
+      parent.querySelectorAll('.org-tab').forEach(function(t) { t.classList.remove('active'); });
+      e.target.classList.add('active');
+    }
+  }
+});
+
+/* ========== QUICK ACTIONS ========== */
+document.addEventListener('click', function(e) {
+  var qa = e.target.closest('.quick-action');
+  if (!qa) return;
+  var title = qa.querySelector('.qa-title').textContent;
+  if (title === 'Pipeline Brief') switchViewByName('pipeline');
+  else if (title === 'Signal Digest') switchViewByName('signals');
+  else if (title === 'Draft Outreach') { var inp = document.querySelector('.command-input'); if (inp) { inp.value = '/outreach '; inp.focus(); } }
+  else if (title === "Today's Focus") switchViewByName('daily');
+});
+
+/* ========== HINT CHIPS ========== */
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('hint-chip')) {
+    var text = e.target.textContent.split(' \u2014 ')[0].trim();
+    var inp = document.querySelector('.command-input');
+    if (inp) { inp.value = text; inp.focus(); }
+  }
+});
+
+/* ========== COMMAND INPUT ========== */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.target.classList.contains('command-input')) {
+    var val = e.target.value.trim();
+    if (!val) return;
+    var conv = document.querySelector('.conversation');
+    if (!conv) return;
+    var userMsg = '<div class="msg"><div class="msg-avatar user">S</div><div class="msg-body"><div class="msg-name">Steve</div><div class="msg-text">'+val.replace(/</g,'&lt;')+'</div></div></div>';
+    var responses = {
+      '/cockpit': '<strong>Morning Briefing \u2014 Apr 6, 2026</strong><br><br>\u2022 Pipeline: <span class="highlight">$487K weighted</span> across 34 deals<br>\u2022 Closing this week: Cypress-Fairbanks ($28K), Killeen ($18K)<br>\u2022 <span style="color:var(--warning);">2 stale deals</span>: Houston ISD (22d), Arlington ISD (10d)<br>\u2022 3 new signals overnight<br>\u2022 ARR: $892K (target: $1.2M)',
+      '/pipeline': '<strong>Pipeline Metrics</strong><br><br>\u2022 Weighted pipeline: <span class="highlight">$487K</span> (+12% MoM)<br>\u2022 Win rate (90d): 28%<br>\u2022 Avg deal size: $14.3K<br>\u2022 Avg days in stage: 18d<br>\u2022 Deals closing this month: 4 ($89K)',
+      '/signal': '<strong>Signal Digest \u2014 Last 48 Hours</strong><br><br>\u2022 <span style="color:var(--warning);">HIGH:</span> Katy ISD board voted 5-2 to form SB 13 committee<br>\u2022 <span style="color:var(--warning);">HIGH:</span> 2 new book challenges filed in Spring ISD<br>\u2022 MED: Region 7 ESC posted compliance RFP<br>\u2022 Updated 3 deal records with signal intelligence',
+      '/cs': '<strong>Customer Health Summary</strong><br><br>\u2022 6 active customers, 4 healthy, 1 at risk, 1 onboarding<br>\u2022 <span style="color:var(--warning);">At risk:</span> Conroe ISD \u2014 low platform adoption (12%)<br>\u2022 NRR: 108% \u2022 CSAT: 4.6/5'
+    };
+    var cmd = val.split(' ')[0].toLowerCase();
+    var reply = responses[cmd] || 'I can help with that. Let me look into <strong>'+val.replace(/</g,'&lt;')+'</strong> and pull the relevant data from the CRM.<br><br><em>In the full system, this would query the database, run intelligence analysis, and return structured results.</em>';
+    var claudeMsg = '<div class="msg"><div class="msg-avatar claude">C</div><div class="msg-body"><div class="msg-name">Claude</div><div class="msg-text">'+reply+'</div></div></div>';
+    conv.innerHTML += userMsg + claudeMsg;
+    conv.scrollTop = conv.scrollHeight;
+    e.target.value = '';
+  }
+});
+</script>
+</body>
+</html>
