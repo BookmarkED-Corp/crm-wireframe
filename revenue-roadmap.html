@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bookmarked — Revenue Roadmap to $1M / $1.5M</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0F1923;
+    --card: #162230;
+    --card-hover: #1A2B3D;
+    --border: #1E3A50;
+    --teal: #2DD4A8;
+    --teal-dim: rgba(45,212,168,0.15);
+    --blue: #3B82F6;
+    --amber: #F59E0B;
+    --red: #EF4444;
+    --green: #22C55E;
+    --purple: #A855F7;
+    --text: #E2E8F0;
+    --muted: #94A3B8;
+    --dim: #64748B;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, #0D2137 0%, #162230 100%); border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo { width: 36px; height: 36px; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--bg); font-size: 18px; }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header h1 span { color: var(--muted); font-weight: 400; margin-left: 8px; }
+  .date-badge { background: var(--teal-dim); color: var(--teal); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+
+  /* KPI Row */
+  .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .kpi-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .kpi-value { font-size: 28px; font-weight: 700; }
+  .kpi-sub { font-size: 12px; color: var(--dim); margin-top: 4px; }
+  .kpi-value.teal { color: var(--teal); }
+  .kpi-value.blue { color: var(--blue); }
+  .kpi-value.amber { color: var(--amber); }
+  .kpi-value.green { color: var(--green); }
+
+  /* Target Toggle */
+  .toggle-row { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .toggle-btn { padding: 10px 24px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+  .toggle-btn.active { background: var(--teal); color: var(--bg); border-color: var(--teal); }
+  .toggle-btn:hover:not(.active) { background: var(--card-hover); color: var(--text); }
+
+  /* Progress Bar */
+  .progress-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+  .progress-header h2 { font-size: 18px; font-weight: 600; }
+  .progress-pct { font-size: 32px; font-weight: 700; color: var(--teal); }
+  .progress-track { height: 32px; background: #1A2B3D; border-radius: 16px; overflow: hidden; position: relative; margin-bottom: 12px; }
+  .progress-fill { height: 100%; border-radius: 16px; transition: width 0.8s ease; position: relative; }
+  .progress-fill.closed { background: var(--teal); z-index: 4; position: absolute; left: 0; }
+  .progress-fill.renewals { background: var(--blue); z-index: 3; position: absolute; }
+  .progress-fill.pipeline { background: var(--amber); z-index: 2; position: absolute; }
+  .progress-fill.relationship { background: var(--purple); z-index: 1; position: absolute; }
+  .progress-legend { display: flex; gap: 24px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* Charts Grid */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .chart-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+  .chart-container { position: relative; }
+  .chart-container canvas { display: block; }
+
+  /* Relationship Clusters */
+  .clusters-section { margin-bottom: 24px; }
+  .clusters-section h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+  .cluster-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .cluster-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s; }
+  .cluster-card:hover { border-color: var(--teal); background: var(--card-hover); }
+  .cluster-card.expanded { grid-column: span 3; }
+  .cluster-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .cluster-name { font-size: 15px; font-weight: 600; }
+  .cluster-amount { font-size: 18px; font-weight: 700; color: var(--teal); }
+  .cluster-connector { font-size: 12px; color: var(--amber); margin-bottom: 8px; }
+  .cluster-deals { font-size: 13px; color: var(--muted); }
+  .cluster-detail { display: none; margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .cluster-card.expanded .cluster-detail { display: block; }
+
+  .deal-row { display: grid; grid-template-columns: 2fr 1fr 1.5fr 1fr; padding: 8px 0; border-bottom: 1px solid rgba(30,58,80,0.5); font-size: 13px; }
+  .deal-row.header { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+  .deal-row .amount { color: var(--teal); font-weight: 600; }
+  .deal-row .path { color: var(--amber); }
+
+  /* Signals */
+  .signal-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .signal-badge.high { background: rgba(239,68,68,0.15); color: var(--red); }
+  .signal-badge.med { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .signal-badge.new { background: rgba(45,212,168,0.15); color: var(--teal); }
+
+  /* Scenario Table */
+  .scenario-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .scenario-section h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+  .scenario-table { width: 100%; border-collapse: collapse; }
+  .scenario-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .scenario-table td { padding: 10px 12px; border-bottom: 1px solid rgba(30,58,80,0.4); font-size: 14px; }
+  .scenario-table tr.total td { border-top: 2px solid var(--teal); font-weight: 700; font-size: 16px; }
+  .scenario-table .amount { color: var(--teal); font-weight: 600; }
+  .scenario-table .gap { color: var(--amber); font-weight: 600; }
+
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .tag.booked { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag.high { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .tag.target { background: rgba(168,85,247,0.15); color: var(--purple); }
+  .tag.stretch { background: rgba(245,158,11,0.15); color: var(--amber); }
+
+  /* Footer */
+  .footer { text-align: center; padding: 24px; color: var(--dim); font-size: 12px; border-top: 1px solid var(--border); margin-top: 24px; }
+
+  @media (max-width: 1024px) {
+    .kpi-row { grid-template-columns: repeat(3, 1fr); }
+    .cluster-grid { grid-template-columns: 1fr 1fr; }
+    .charts-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .cluster-grid { grid-template-columns: 1fr; }
+    .cluster-card.expanded { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">B</div>
+    <h1>Revenue Roadmap <span>to $1M+ ARR</span></h1>
+  </div>
+  <div class="date-badge">Live Data — April 7, 2026</div>
+</div>
+
+<div class="container">
+
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Closed Won YTD</div>
+      <div class="kpi-value teal">$230,662</div>
+      <div class="kpi-sub">6 deals closed in 2026</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">True Renewals</div>
+      <div class="kpi-value blue">$40,188</div>
+      <div class="kpi-sub">9 districts — paid, used V1</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Known Revenue Floor</div>
+      <div class="kpi-value green">$270,850</div>
+      <div class="kpi-sub">Closed + true renewals only</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Winbacks (Never Used V1)</div>
+      <div class="kpi-value amber">$104,010</div>
+      <div class="kpi-sub">11 districts — $0 paid, need re-sell</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Churned / At Risk</div>
+      <div class="kpi-value" style="color:var(--red);">$91,866</div>
+      <div class="kpi-sub">Keller ISD ($91K) + Morgan ISD</div>
+    </div>
+  </div>
+
+  <!-- Second KPI Row -->
+  <div class="kpi-row" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
+    <div class="kpi">
+      <div class="kpi-label">Open Pipeline (New Biz)</div>
+      <div class="kpi-value amber">$1.88M</div>
+      <div class="kpi-sub">42 active deals in HubSpot</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Relationship Targets</div>
+      <div class="kpi-value" style="color:var(--purple);">$810K</div>
+      <div class="kpi-sub">Dallas $435K + Northside $300K + ESC $75K</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Total Addressable Revenue</div>
+      <div class="kpi-value teal">$3.1M</div>
+      <div class="kpi-sub">All sources (deadline Aug 1)</div>
+    </div>
+  </div>
+
+  <!-- Target Toggle -->
+  <div class="toggle-row">
+    <span style="color:var(--muted); font-size:14px; font-weight:600;">TARGET:</span>
+    <button class="toggle-btn active" onclick="setTarget(1000000, this)">$1M ARR</button>
+    <button class="toggle-btn" onclick="setTarget(1500000, this)">$1.5M ARR</button>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <h2>Road to <span id="targetLabel">$1M</span> ARR</h2>
+      <div class="progress-pct" id="progressPct">46%</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill closed" id="barClosed" style="width:23%"></div>
+      <div class="progress-fill renewals" id="barRenewals" style="width:46%"></div>
+      <div class="progress-fill pipeline" id="barPipeline" style="width:69%"></div>
+      <div class="progress-fill relationship" id="barRelationship" style="width:100%"></div>
+    </div>
+    <div class="progress-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div> Closed Won — $230,662</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> True Renewals — $40,188</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> Winbacks ($104K) + Pipeline ($228K)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div> Relationship Targets — <span id="relLegend">$435K (Dallas ISD)</span></div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Revenue Waterfall — Path to Target</h3>
+      <div class="chart-container"><canvas id="waterfallChart" style="width:100%;height:300px"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Pipeline by Relationship Cluster</h3>
+      <div class="chart-container"><canvas id="clusterChart" style="width:100%;height:300px"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Monthly Revenue Build (Projected)</h3>
+      <div class="chart-container"><canvas id="monthlyChart" style="width:100%;height:300px"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Deal Owner Split</h3>
+      <div class="chart-container"><canvas id="ownerChart" style="width:100%;height:300px"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ESC 16 Segmentation -->
+  <div class="scenario-section" style="margin-bottom:24px;">
+    <h2>ESC 16 District Segmentation — Honest Numbers</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Previously reported as ~$230K in renewals. Actual breakdown based on HubSpot payment history:</p>
+    <table class="scenario-table">
+      <thead><tr><th>Category</th><th>Districts</th><th>ARR at $3/student</th><th>Confidence</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="tag booked">TRUE RENEWAL</span></td>
+          <td>9 districts<br><span style="font-size:11px;color:var(--dim)">Dripping Springs, Holliday, Presidio, Forsan, Highland Park, Dodd City, Fayetteville, Mullin, Cranfills Gap</span></td>
+          <td class="amount">$40,188</td>
+          <td><span class="tag booked">HIGH (80%+)</span></td>
+          <td style="color:var(--muted);font-size:13px">Paid original deal, used V1, active relationship</td>
+        </tr>
+        <tr>
+          <td><span class="tag stretch">WINBACK</span></td>
+          <td>11 districts<br><span style="font-size:11px;color:var(--dim)">ILTexas, TX Leadership, San Elizario, Dalhart, Eastland, Tornillo, Priority Charter, Midland Academy, Miami, Channing, Dumas</span></td>
+          <td class="amount">$104,010</td>
+          <td><span class="tag stretch">MODERATE (40%)</span></td>
+          <td style="color:var(--muted);font-size:13px">Signed contract but $0 paid — never deployed V1. Requires re-sell.</td>
+        </tr>
+        <tr>
+          <td><span style="display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(239,68,68,0.15);color:var(--red);">CHURNED</span></td>
+          <td>2 districts<br><span style="font-size:11px;color:var(--dim)">Keller ISD ($91K), Morgan ISD ($408)</span></td>
+          <td class="amount">$91,866</td>
+          <td><span style="display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:rgba(239,68,68,0.15);color:var(--red);">LOW (20%)</span></td>
+          <td style="color:var(--muted);font-size:13px">Keller in CHURN stage in HubSpot. Morgan confirmed churned.</td>
+        </tr>
+        <tr class="total">
+          <td>PREVIOUS TOTAL REPORTED</td>
+          <td></td>
+          <td class="gap">$236,064</td>
+          <td></td>
+          <td style="color:var(--muted);font-size:13px">Was reported as "renewals" at high confidence</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700">REALISTIC WEIGHTED VALUE</td>
+          <td></td>
+          <td class="amount" style="font-weight:700;font-size:16px">$91,354</td>
+          <td></td>
+          <td style="color:var(--muted);font-size:13px">$40K×80% + $104K×40% + $92K×20%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Relationship Clusters -->
+  <div class="clusters-section">
+    <h2>Relationship Clusters — How Revenue Builds</h2>
+    <div class="cluster-grid" id="clusterGrid"></div>
+  </div>
+
+  <!-- Backup Channels -->
+  <div class="clusters-section" style="margin-bottom:24px;">
+    <h2>Backup: Relationship Channels to Activate <span style="font-size:14px;color:var(--muted);font-weight:400;">— if primary targets stall</span></h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">These aren't named targets yet — they're the networks that open up as we work our existing relationships. We identify warm paths as we go.</p>
+    <div id="backupGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
+  </div>
+
+  <!-- Scenario Table -->
+  <div class="scenario-section">
+    <h2>Scenario Models</h2>
+    <table class="scenario-table" id="scenarioTable"></table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Bookmarked Revenue Roadmap — Data from HubSpot (April 7, 2026) + ESC 16 Renewal Tracker + Relationship Intelligence<br>
+  Prepared for Michelle Rogers (CFO) meeting
+</div>
+
+<script>
+// === CHART DEFAULTS ===
+Chart.defaults.devicePixelRatio = 2;
+
+// === DATA ===
+const closedWon = 230662;
+const trueRenewals = 40188;
+const winbacks = 104010;
+const churned = 91866;  // Keller + Morgan
+const knownFloor = closedWon + trueRenewals;  // $270,850 — only count what's real
+
+const clusters = [
+  {
+    name: "Region 4 ESC Network (Houston)",
+    connector: "Mo Casey, Region 4 ESC, TCEA contacts",
+    total: 191736,
+    signals: ["SB 13 compliance pressure", "Board votes creating committees", "TCEA conference connections"],
+    deals: [
+      { name: "Cypress-Fairbanks ISD", arr: 107190, stage: "Presentation Scheduled", owner: "Jan", path: "Direct" },
+      { name: "Pasadena ISD", arr: 54646, stage: "Qualifying", owner: "Jan", path: "Direct" },
+      { name: "Pearland ISD", arr: 19834, stage: "Qualifying", owner: "Jan", path: "Direct" },
+      { name: "Tomball ISD", arr: 10066, stage: "Qualifying", owner: "Steve", path: "Direct" },
+    ]
+  },
+  {
+    name: "Region 10 / DFW + ESC 10",
+    connector: "ESC 10 introduction, ESC 16 referrals, Steve/conference contacts",
+    total: 572676,
+    signals: ["ESC 10 intro path to Dallas ISD", "District referrals from ESC 16 customers", "Board minutes compliance activity"],
+    deals: [
+      { name: "Dallas ISD", arr: 435000, stage: "Target — Not in HubSpot", owner: "Jan/Steve", path: "Via ESC 10", signal: "new" },
+      { name: "Garland ISD", arr: 46797, stage: "DM Bought In", owner: "Steve", path: "Direct" },
+      { name: "Grand Prairie ISD", arr: 23949, stage: "Presentation Scheduled", owner: "Jan", path: "Direct" },
+      { name: "Carrollton-Farmers Branch", arr: 22082, stage: "Presentation Scheduled", owner: "Jan", path: "ESC 16 referral" },
+      { name: "Wylie ISD", arr: 18088, stage: "Presentation Scheduled", owner: "Jan", path: "Direct" },
+      { name: "Aledo ISD", arr: 14814, stage: "DM Bought In", owner: "Teela", path: "Direct" },
+      { name: "Duncanville ISD", arr: 11946, stage: "Presentation Scheduled", owner: "Jan", path: "Direct" },
+    ]
+  },
+  {
+    name: "Moak Casey Network",
+    connector: "Moak Casey (TX school finance consultancy) — advises hundreds of districts",
+    total: 300000,
+    signals: ["Moak Casey advises Northside ISD", "Original deal was $427K before closed lost — re-engage at full enrollment", "Potential to unlock additional districts through relationship"],
+    deals: [
+      { name: "Northside ISD (full enrollment)", arr: 300000, stage: "Qualifying — HubSpot shows $25K pilot", owner: "Steve", path: "Via Moak Casey", signal: "high" },
+    ]
+  },
+  {
+    name: "Region 13 (Central TX / Austin)",
+    connector: "Existing customers as references (Round Rock, Leander, Georgetown)",
+    total: 64782,
+    signals: ["Round Rock health score 92", "Leander renewed 2yr, NPS 9", "Librarian meetup referrals"],
+    deals: [
+      { name: "Liberty Hill ISD", arr: 30000, stage: "Presentation Scheduled", owner: "Jan", path: "Region proximity" },
+      { name: "Boerne ISD", arr: 10250, stage: "DM Bought In", owner: "Jan", path: "Warm" },
+      { name: "Hays CISD", arr: 9251, stage: "Contract Sent", owner: "Jan", path: "Direct" },
+      { name: "Celina ISD", arr: 8000, stage: "Contract Sent", owner: "Jan", path: "Direct" },
+      { name: "Wimberley ISD", arr: 7281, stage: "DM Bought In", owner: "Jan", path: "Warm" },
+    ]
+  },
+  {
+    name: "South Texas / Valley",
+    connector: "ESC 16 contacts, bilingual district network",
+    total: 32576,
+    signals: ["SB 13 pressure in Valley districts", "Bilingual compliance needs"],
+    deals: [
+      { name: "Harlingen CISD", arr: 15150, stage: "Qualifying", owner: "Jan", path: "Direct" },
+      { name: "Los Fresnos CISD", arr: 9287, stage: "Presentation Scheduled", owner: "Steve", path: "Direct" },
+      { name: "San Benito CISD", arr: 8139, stage: "Qualifying", owner: "Teela", path: "Direct" },
+    ]
+  },
+  {
+    name: "Out-of-State / Strategic",
+    connector: "Steve direct relationships, state-level opportunities",
+    total: 1333770,
+    signals: ["Utah state-level deal", "Out-of-state expansion proof points"],
+    deals: [
+      { name: "Utah State Education Agency", arr: 1312622, stage: "Qualifying", owner: "Steve", path: "Steve direct" },
+      { name: "Levy County FL", arr: 15000, stage: "Qualifying", owner: "Jan", path: "Direct" },
+      { name: "Fort Vermilion (Canada)", arr: 6148, stage: "Qualifying", owner: "Steve", path: "Steve direct" },
+    ]
+  }
+];
+
+// Backup: Relationship channels (not specific districts — we map paths as we work the network)
+const backupChannels = [
+  {
+    channel: "ESC 4 Network (Houston Region)",
+    connector: "Same network as Cy-Fair, Pasadena, Pearland — warm paths emerge as we work the region",
+    untappedDistricts: 6,
+    totalAddressable: 972000,
+    examples: "Fort Bend (78K), Aldine (67K), Klein (54K), Humble (47K), Clear Creek (43K), Spring Branch (35K)",
+    status: "Paths to be identified through existing Region 4 relationships"
+  },
+  {
+    channel: "ESC 10 Network (DFW)",
+    connector: "ESC 10 intro opens the full Region 10 network — Dallas ISD is the entry point",
+    untappedDistricts: 2,
+    totalAddressable: 219000,
+    examples: "Richardson (37K — ESC 10 HQ is literally in Richardson), McKinney (36K)",
+    status: "Unlocks when ESC 10 relationship is established via Dallas ISD pursuit"
+  },
+  {
+    channel: "Moak Casey Network (Statewide)",
+    connector: "TX school finance consultancy — advises hundreds of districts across the state",
+    untappedDistricts: "TBD",
+    totalAddressable: 0,
+    examples: "District targets to be identified through Moak Casey relationship",
+    status: "Map which districts Moak Casey advises beyond Northside"
+  },
+  {
+    channel: "Region 20 Network (San Antonio)",
+    connector: "Northside ISD opens the door — same region as North East ISD (existing pilot customer)",
+    untappedDistricts: 3,
+    totalAddressable: 402000,
+    examples: "North East ISD SA (63K — already a pilot customer), San Antonio ISD (47K), Judson ISD (24K)",
+    status: "Leverage Northside pursuit + existing North East ISD relationship"
+  },
+  {
+    channel: "Region 11 Network (Fort Worth / Mid-Cities)",
+    connector: "Steve has conference contacts — Lewisville ISD already showed inbound interest",
+    untappedDistricts: 3,
+    totalAddressable: 360000,
+    examples: "Lewisville (51K — librarian called about bulk workflows), Mansfield (35K), Denton (34K)",
+    status: "Lewisville signal already captured — build from there"
+  },
+  {
+    channel: "Region 1 / Valley Network",
+    connector: "Extends South Texas cluster — Harlingen, San Benito, Los Fresnos open the network",
+    untappedDistricts: 5,
+    totalAddressable: 486000,
+    examples: "United ISD Laredo (43K), Brownsville (38K), Edinburg (34K), McAllen (23K)",
+    status: "Warm paths emerge as current Valley deals progress"
+  }
+];
+
+let currentTarget = 1000000;
+
+// === PROGRESS BAR ===
+function updateProgress(target) {
+  const winbackClose = winbacks;  // Full $104K at $3/student
+  const pipelineClose = 228000;  // 40% of $569K open pipeline
+  // $1M scenario: Dallas ISD only. $1.5M: + Northside + Keller + ESC + Utah
+  const relTargets = (target === 1000000) ? 435000 : 1101458;  // $1M: Dallas. $1.5M: Dallas + Northside + Keller + ESC + Utah
+
+  const closedPct = Math.min((closedWon / target) * 100, 100);
+  const renewalsPct = Math.min(((closedWon + trueRenewals) / target) * 100, 100);
+  const pipelinePct = Math.min(((closedWon + trueRenewals + winbackClose + pipelineClose) / target) * 100, 100);
+  const relPct = Math.min(((closedWon + trueRenewals + winbackClose + pipelineClose + relTargets) / target) * 100, 100);
+
+  document.getElementById("barClosed").style.width = closedPct + "%";
+  document.getElementById("barRenewals").style.width = renewalsPct + "%";
+  document.getElementById("barPipeline").style.width = pipelinePct + "%";
+  document.getElementById("barRelationship").style.width = relPct + "%";
+
+  const totalProjected = closedWon + trueRenewals + winbackClose + pipelineClose + relTargets;
+  const pct = Math.round((totalProjected / target) * 100);
+  document.getElementById("progressPct").textContent = pct + "%";
+  document.getElementById("targetLabel").textContent = target === 1000000 ? "$1M" : "$1.5M";
+  document.getElementById("relLegend").textContent = target === 1000000 ? "$435K (Dallas ISD)" : "$1.1M (Dallas + Northside + Keller + ESC + Utah)";
+
+  // Update scenario table
+  renderScenarios(target);
+  // Update waterfall
+  renderWaterfall(target);
+}
+
+function setTarget(target, btn) {
+  currentTarget = target;
+  document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  updateProgress(target);
+}
+
+// === CLUSTER CARDS ===
+function renderClusters() {
+  const grid = document.getElementById("clusterGrid");
+  grid.innerHTML = "";
+  clusters.forEach((c, idx) => {
+    const card = document.createElement("div");
+    card.className = "cluster-card";
+    card.onclick = () => {
+      card.classList.toggle("expanded");
+    };
+
+    let dealsHtml = `<div class="deal-row header"><div>Deal</div><div>ARR</div><div>Stage</div><div>Path</div></div>`;
+    c.deals.forEach(d => {
+      const sigBadge = d.signal === "new" ? ' <span class="signal-badge new">NEW TARGET</span>' :
+                       d.signal === "high" ? ' <span class="signal-badge high">HIGH SIGNAL</span>' : '';
+      dealsHtml += `<div class="deal-row">
+        <div>${d.name}${sigBadge}</div>
+        <div class="amount">$${d.arr.toLocaleString()}</div>
+        <div>${d.stage}</div>
+        <div class="path">${d.path}</div>
+      </div>`;
+    });
+
+    let signalsHtml = c.signals.map(s => `<div style="font-size:12px;color:var(--amber);margin-bottom:4px;">⚡ ${s}</div>`).join("");
+
+    card.innerHTML = `
+      <div class="cluster-header">
+        <div>
+          <div class="cluster-name">${c.name}</div>
+          <div class="cluster-connector">🔗 ${c.connector}</div>
+          <div class="cluster-deals">${c.deals.length} deals in cluster</div>
+        </div>
+        <div class="cluster-amount">$${c.total.toLocaleString()}</div>
+      </div>
+      <div class="cluster-detail">
+        ${signalsHtml}
+        <div style="margin-top:12px;">${dealsHtml}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// === CHARTS ===
+let waterfallChartInst, clusterChartInst, monthlyChartInst, ownerChartInst;
+
+function renderWaterfall(target) {
+  const ctx = document.getElementById("waterfallChart").getContext("2d");
+  if (waterfallChartInst) waterfallChartInst.destroy();
+
+  const labels = ["Closed Won", "True Renewals", "Winbacks", "Pipeline (40%)", "Dallas ISD", "Northside ISD", "ESC Referrals", "Total", target === 1000000 ? "$1M Target" : "$1.5M Target"];
+  const totalVal = 230662 + 40188 + 104010 + 228000 + 435000 + 300000 + 75000;
+  const vals = [230662, 40188, 104010, 228000, 435000, 300000, 75000, totalVal, target];
+
+  waterfallChartInst = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        data: vals,
+        backgroundColor: [
+          "#2DD4A8", "#3B82F6", "#F59E0B", "#F59E0B", "#A855F7", "#A855F7", "#A855F7",
+          totalVal >= target ? "#22C55E" : "#EF4444",
+          "rgba(226,232,240,0.15)"
+        ],
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => "$" + ctx.raw.toLocaleString() } }
+      },
+      scales: {
+        y: { ticks: { color: "#94A3B8", callback: v => "$" + (v/1000) + "K" }, grid: { color: "rgba(30,58,80,0.4)" } },
+        x: { ticks: { color: "#94A3B8", font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderClusterChart() {
+  const ctx = document.getElementById("clusterChart").getContext("2d");
+  const txClusters = clusters.filter(c => c.name !== "Out-of-State / Strategic");
+  clusterChartInst = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: txClusters.map(c => c.name),
+      datasets: [{
+        data: txClusters.map(c => c.total),
+        backgroundColor: ["#2DD4A8", "#3B82F6", "#A855F7", "#F59E0B", "#EF4444"],
+        borderWidth: 0,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: "55%",
+      plugins: {
+        legend: { position: "right", labels: { color: "#94A3B8", font: { size: 11 }, padding: 12, usePointStyle: true } },
+        tooltip: { callbacks: { label: ctx => ctx.label + ": $" + ctx.raw.toLocaleString() } }
+      }
+    }
+  });
+}
+
+function renderMonthlyChart() {
+  const ctx = document.getElementById("monthlyChart").getContext("2d");
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug 1"];
+  // Projected cumulative ARR by month — DEADLINE: August 1, 2026
+  const closed =             [6259, 15703, 230662, 230662, 230662, 230662, 230662, 230662];
+  const withRenewals =       [6259, 15703, 230662, 250850, 260850, 270850, 270850, 270850];
+  const withWinbackPipeline =[6259, 15703, 230662, 330850, 420850, 510850, 570850, 602850];
+  const withRelationship =   [6259, 15703, 230662, 430850, 620850, 880850, 1150850, 1412850];
+  const target1m = Array(8).fill(1000000);
+
+  monthlyChartInst = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: months,
+      datasets: [
+        { label: "Closed Won", data: closed, borderColor: "#2DD4A8", backgroundColor: "rgba(45,212,168,0.1)", fill: true, tension: 0.3, pointRadius: 3 },
+        { label: "+ True Renewals", data: withRenewals, borderColor: "#3B82F6", backgroundColor: "rgba(59,130,246,0.05)", fill: false, tension: 0.3, pointRadius: 3 },
+        { label: "+ Winbacks & Pipeline", data: withWinbackPipeline, borderColor: "#F59E0B", fill: false, tension: 0.3, pointRadius: 3, borderDash: [5,5] },
+        { label: "+ Relationship Targets", data: withRelationship, borderColor: "#A855F7", fill: false, tension: 0.3, pointRadius: 3, borderDash: [5,5] },
+        { label: "$1M Target", data: target1m, borderColor: "rgba(239,68,68,0.5)", fill: false, pointRadius: 0, borderDash: [10,5], borderWidth: 2 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: "#94A3B8", font: { size: 11 }, usePointStyle: true } } },
+      scales: {
+        y: { ticks: { color: "#94A3B8", callback: v => "$" + (v/1000) + "K" }, grid: { color: "rgba(30,58,80,0.4)" } },
+        x: { ticks: { color: "#94A3B8" }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderOwnerChart() {
+  const ctx = document.getElementById("ownerChart").getContext("2d");
+  // Sum pipeline by owner
+  let jan = 0, teela = 0, steve = 0;
+  clusters.forEach(c => c.deals.forEach(d => {
+    if (d.owner.includes("Jan")) jan += d.arr;
+    else if (d.owner.includes("Teela")) teela += d.arr;
+    else steve += d.arr;
+  }));
+
+  ownerChartInst = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Jan Gilboy", "Steve Wandler", "Teela Watson"],
+      datasets: [
+        { label: "Closed Won", data: [7945, 0, 222717], backgroundColor: "#2DD4A8", borderRadius: 4 },
+        { label: "Open Pipeline", data: [jan, steve, teela], backgroundColor: "#3B82F6", borderRadius: 4 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: "#94A3B8", font: { size: 11 } } } },
+      scales: {
+        y: { stacked: true, ticks: { color: "#94A3B8", callback: v => "$" + (v/1000) + "K" }, grid: { color: "rgba(30,58,80,0.4)" } },
+        x: { stacked: true, ticks: { color: "#94A3B8" }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// === SCENARIO TABLE ===
+function renderScenarios(target) {
+  const table = document.getElementById("scenarioTable");
+  const is1m = target === 1000000;
+
+  const rows = [
+    { source: "Closed Won YTD (HubSpot verified)", arr: 230662, tag: "booked", timeline: "Done" },
+    { source: "True Renewals (9 districts — paid, used V1)", arr: 40188, tag: "high", timeline: "Apr – Jun" },
+    { source: "Winbacks (11 districts — $104K at $3/student)", arr: 104010, tag: "target", timeline: "Apr – Jul" },
+    { source: "Pipeline closes (40% of $569K excl. Utah)", arr: 228000, tag: "target", timeline: "Apr – Jul" },
+    { source: "Dallas ISD (145K students × $3 — via ESC 10)", arr: 435000, tag: "target", timeline: "Apr – Jul" },
+  ];
+
+  if (!is1m) {
+    rows.push({ source: "Northside ISD (100K+ students × $3 — via Moak Casey)", arr: 300000, tag: "target", timeline: "Apr – Jul" });
+    rows.push({ source: "Keller ISD winback ($91K at $3/student)", arr: 91458, tag: "stretch", timeline: "May – Jul" });
+    rows.push({ source: "ESC channel referrals (5 deals × $15K avg)", arr: 75000, tag: "stretch", timeline: "May – Jul" });
+    rows.push({ source: "Utah State (partial — accelerated)", arr: 200000, tag: "stretch", timeline: "Jul" });
+  }
+
+  const total = rows.reduce((s, r) => s + r.arr, 0);
+  const gap = target - total;
+
+  const tagLabels = { booked: "BOOKED", high: "HIGH CONF", target: "TARGET", stretch: "STRETCH" };
+
+  let html = `<thead><tr><th>Source</th><th>ARR</th><th>Confidence</th><th>Timeline</th></tr></thead><tbody>`;
+  rows.forEach(r => {
+    html += `<tr>
+      <td>${r.source}</td>
+      <td class="amount">$${r.arr.toLocaleString()}</td>
+      <td><span class="tag ${r.tag}">${tagLabels[r.tag]}</span></td>
+      <td style="color:var(--muted)">${r.timeline}</td>
+    </tr>`;
+  });
+  html += `<tr class="total">
+    <td>PROJECTED TOTAL</td>
+    <td class="amount" style="color:${total >= target ? 'var(--green)' : 'var(--amber)'}">$${total.toLocaleString()}</td>
+    <td>${total >= target ? '<span class="tag booked">ON TARGET</span>' : '<span class="tag stretch">GAP: $' + Math.abs(gap).toLocaleString() + '</span>'}</td>
+    <td></td>
+  </tr>`;
+  html += `</tbody>`;
+  table.innerHTML = html;
+}
+
+// === INIT ===
+function renderBackupChannels() {
+  const grid = document.getElementById("backupGrid");
+  grid.innerHTML = "";
+  backupChannels.forEach(c => {
+    const card = document.createElement("div");
+    card.style.cssText = "background:var(--card);border:1px dashed var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all 0.2s;";
+    card.onmouseenter = () => { card.style.borderColor = "var(--amber)"; card.style.background = "var(--card-hover)"; };
+    card.onmouseleave = () => { card.style.borderColor = "var(--border)"; card.style.background = "var(--card)"; };
+
+    const arrDisplay = c.totalAddressable > 0
+      ? '<div style="font-size:20px;font-weight:700;color:var(--amber);">$' + c.totalAddressable.toLocaleString() + '</div><div style="font-size:11px;color:var(--dim);">' + c.untappedDistricts + ' untapped districts</div>'
+      : '<div style="font-size:16px;font-weight:600;color:var(--dim);">To be mapped</div>';
+
+    card.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">' +
+        '<div style="font-size:14px;font-weight:600;">' + c.channel + '</div>' +
+        '<div style="text-align:right;">' + arrDisplay + '</div>' +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--amber);margin-bottom:8px;">\uD83D\uDD17 ' + c.connector + '</div>' +
+      '<div style="font-size:11px;color:var(--dim);margin-bottom:6px;">e.g. ' + c.examples + '</div>' +
+      '<div style="font-size:11px;color:var(--muted);font-style:italic;">' + c.status + '</div>';
+    grid.appendChild(card);
+  });
+}
+
+// Defer chart rendering to ensure canvases are laid out
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    renderClusters();
+    renderBackupChannels();
+    updateProgress(1000000);
+    renderClusterChart();
+    renderMonthlyChart();
+    renderOwnerChart();
+    // Force resize to fix any DPR issues
+    window.dispatchEvent(new Event('resize'));
+  }, 100);
+});
+</script>
+</body>
+</html>
